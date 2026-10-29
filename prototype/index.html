@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -125,6 +125,13 @@ tr:last-child td{border-bottom:0}
 .toggle{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
 .toggle button{border:0;background:#fff;padding:7px 12px}.toggle button.on{background:#fff2d6;color:#7a4b0c;font-weight:700}
 .toggle button.on.pub{background:#e6eeff;color:#2f5597}
+body.auth .sidebar,body.auth .topbar{display:none}body.auth .shell{grid-template-columns:1fr}body.auth .main{max-width:none;padding:0}
+.auth-wrap{display:grid;grid-template-columns:1.1fr 1fr;min-height:100vh}
+.auth-intro{background:linear-gradient(150deg,#162843,#2a4f8f);color:#eef3ff;padding:56px 64px;display:flex;flex-direction:column;justify-content:center}
+.auth-intro .brand{padding:0 0 40px}.auth-intro h1{font-size:38px;color:#fff;max-width:460px}.auth-intro p{color:#c7d6f0;font-size:16px;max-width:460px}
+.auth-intro ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px;font-size:15px}
+.auth-form{display:grid;place-items:center;padding:40px}.auth-form .card{width:100%;max-width:420px;padding:30px}
+@media(max-width:800px){.auth-wrap{grid-template-columns:1fr}.auth-intro{padding:32px 20px}}
 .toast{position:fixed;bottom:24px;right:28px;background:#1d3a60;color:#fff;padding:13px 17px;border-radius:10px;box-shadow:0 8px 30px #1a304c40;display:none;max-width:380px}
 .empty{text-align:center;padding:30px;color:var(--muted)}
 @media(max-width:1100px){.shell{grid-template-columns:68px 1fr}.sidebar .lbl,.navgroup,.brand span:last-child,.tenant,.nav .count{display:none}.nav{justify-content:center}.assistant,.split{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,1fr)}.search{display:none}}
@@ -216,7 +223,7 @@ const NAV = {
 function renderNav(path){
   const groups=NAV[ui.role];
   $('#nav').innerHTML=groups.map(([g,items])=>`<div class="navgroup">${g}</div>`+items.map(([h,i,l,c])=>{const on=('#'+path)===h||(h!=='#/app'&&h!=='#/it'&&('#'+path).startsWith(h+'/'));const n=c?c():0;return `<a class="nav ${on?'active':''}" href="${h}"><span class="ico">${i}</span><span class="lbl">${l}</span>${n?`<span class="count">${n}</span>`:''}</a>`}).join('')).join('')
-    +`<div class="navgroup">Account</div><a class="nav" href="#/profile"><span class="ico">⚙</span><span class="lbl">My Profile</span></a>`;
+    +`<div class="navgroup">Account</div><a class="nav ${path==='/profile'?'active':''}" href="#/profile"><span class="ico">⚙</span><span class="lbl">My Profile</span></a><a class="nav" href="#/login"><span class="ico">⎋</span><span class="lbl">Sign out</span></a>`;
   $('#role').value=ui.role; $('#avatar').textContent={employee:'AN',staff:'HM',manager:'QL'}[ui.role];
 }
 
@@ -278,7 +285,7 @@ function confirmDraft(btn){
 function assistant(){
   const d=ui.ai.draft;
   return head('Employee Portal','AI Assistant','Answers come from published internal guides. The assistant prepares drafts; only you can submit them.')+`
-  <div class="assistant"><div class="card chat"><div class="chathead spread"><b>✦ SmartDesk Assistant</b><span class="pill green">● Grounded on 4 published articles</span></div>
+  <div class="assistant"><div class="card chat"><div class="chathead spread"><b>✦ SmartDesk Assistant</b><span class="pill green">● Uses 4 published guides</span></div>
     <div class="chatbody" id="chatbody">${ui.chat.map(m=>`<div class="bubble ${m.who} ${m.cls||''}">${m.html}</div>`).join('')}</div>
     <div class="chips">${['My VPN says authentication timed out','I need a laptop for a new hire','Where is my ticket INC-1042?','Can I expense a home router?'].map(s=>`<button class="btn ghost sm" onclick="ask('${s}');render()">${s}</button>`).join('')}</div>
     <form class="composer" onsubmit="event.preventDefault();ask(this.q.value);render()"><input name="q" class="field" placeholder="Ask about VPN, Wi-Fi, devices, your tickets…" aria-label="Message"><button class="btn">Send</button></form></div>
@@ -373,9 +380,9 @@ function myAssets(){
 /* ---------------------------------------------------------------- IT workspace */
 function agentHome(){
   const c=s=>db.tickets.filter(s).length;
-  return head('IT Workspace','Good morning, Minh','Your work ordered by SLA.')+`<div class="grid g4">${[[c(t=>t.assignee==='Unassigned'),'Unassigned','#/it/tickets'],[c(t=>t.assignee==='Hoang Minh'&&!['Closed','Resolved'].includes(t.status)),'Assigned to me','#/it/tickets'],[c(t=>t.sla==='amber'),'Near SLA breach','#/it/tickets'],[c(t=>t.status==='Approved'),'Ready to fulfil','#/it/fulfilment/SR-1038']].map(k=>`<a class="card kpi qa" href="${k[2]}"><span class="tiny">${k[1]}</span><div class="n">${k[0]}</div></a>`).join('')}</div>
+  return head('IT Workspace','Good morning, Minh','Your work ordered by SLA.')+`<div class="grid g4">${[[c(t=>t.assignee==='Unassigned'),'Unassigned','#/it/tickets'],[c(t=>t.assignee==='Hoang Minh'&&!['Closed','Resolved'].includes(t.status)),'Assigned to me','#/it/tickets'],[c(t=>t.sla==='amber'),'Near SLA breach','#/it/tickets'],[c(t=>t.status==='Approved'),'Ready to deliver','#/it/fulfilment/SR-1038']].map(k=>`<a class="card kpi qa" href="${k[2]}"><span class="tiny">${k[1]}</span><div class="n">${k[0]}</div></a>`).join('')}</div>
   <div class="split mt" style="margin-top:20px"><div class="card"><div class="spread"><h2>My priority list</h2><a class="tiny" href="#/it/tickets">Open queue →</a></div>${queueTable(db.tickets.filter(t=>!['Closed','Pending Approval'].includes(t.status)))}</div>
-  <div class="card"><h2>Fulfilment tasks</h2>${db.tickets.filter(t=>t.type==='Service Request'&&['Approved','Pending Approval'].includes(t.status)).map(t=>`<a class="qa mb" href="#/it/fulfilment/${t.id}" style="padding:12px"><strong>${t.id} · ${esc(t.title)}</strong><span>${statusPill(t.status)}</span></a>`).join('')}</div></div>`;
+  <div class="card"><h2>Ready to deliver</h2>${db.tickets.filter(t=>t.type==='Service Request'&&['Approved','Pending Approval'].includes(t.status)).map(t=>`<a class="qa mb" href="#/it/fulfilment/${t.id}" style="padding:12px"><strong>${t.id} · ${esc(t.title)}</strong><span>${statusPill(t.status)}</span></a>`).join('')}</div></div>`;
 }
 function queueTable(list){return `<table><thead><tr><th>ID</th><th>Title</th><th>Requester</th><th>Priority</th><th>Status</th><th>Assignee</th><th>SLA</th></tr></thead><tbody>${list.map(t=>`<tr onclick="go('#/it/tickets/${t.id}')"><td class="tid">${t.id}</td><td><b>${esc(t.title)}</b><div class="tiny">${t.type} · ${t.service}</div></td><td>${esc(t.requester)}</td><td>${prioPill(t.priority)}</td><td>${statusPill(t.status)}</td><td>${esc(t.assignee)}</td><td><span class="pill ${t.sla==='amber'?'amber':t.sla==='green'?'green':'grey'}">${esc(t.due)}</span></td></tr>`).join('')}</tbody></table>`}
 function queue(){
@@ -418,9 +425,9 @@ function fulfilment(id){
   const t=ticket(id); if(!t)return notFound();
   const locked=t.status==='Pending Approval', avail=db.assets.filter(a=>a.status==='Available'&&a.type==='Laptop');
   return head('IT Workspace / Fulfilment',`${t.id} · ${esc(t.title)}`,'Prepare and hand over the requested device.')+`
-  ${locked?'<div class="banner warn">🔒 <div><b>Locked until approved.</b> This request is waiting for an IT Manager. Nothing can be reserved yet.</div></div>':t.status==='Resolved'||t.status==='Closed'?'<div class="banner ok">✓ Device handed over — request resolved.</div>':'<div class="banner ok">✓ Approved by '+esc(t.approvedBy||'IT Manager')+' — ready to fulfil.</div>'}
+  ${locked?'<div class="banner warn">🔒 <div><b>Locked until approved.</b> This request is waiting for an IT Manager. Nothing can be reserved yet.</div></div>':t.status==='Resolved'||t.status==='Closed'?'<div class="banner ok">✓ Device handed over — request resolved.</div>':'<div class="banner ok">✓ Approved by '+esc(t.approvedBy||'IT Manager')+' — ready to prepare.</div>'}
   <div class="split"><div class="card"><h2>Checklist</h2>${['Pick an available laptop','Install standard image and enroll MDM','Create handover record','Notify the requester'].map((s,i)=>`<label class="row" style="margin:10px 0"><input type="checkbox" ${locked?'disabled':''} ${t.status==='Resolved'||i<1&&!locked?'checked':''}> ${s}</label>`).join('')}
-    <h2 class="mt" style="margin-top:20px">Asset picker</h2><p>Only <b>AVAILABLE</b> laptops are listed.</p>
+    <h2 class="mt" style="margin-top:20px">Asset picker</h2><p>Only laptops that are free to hand out are listed.</p>
     <table><thead><tr><th></th><th>Tag</th><th>Model</th><th>Location</th></tr></thead><tbody>${avail.map((a,i)=>`<tr><td><input type="radio" name="asset" value="${a.tag}" ${i?'':'checked'} ${locked?'disabled':''} aria-label="${a.tag}"></td><td class="tid">${a.tag}</td><td>${a.model}</td><td>${a.loc}</td></tr>`).join('')}</tbody></table>
     <button class="btn mt" ${locked||t.status==='Resolved'?'disabled':''} onclick="handover('${t.id}')">Hand over device</button></div>
   <div class="card"><h2>Request</h2><div class="meta"><span>Requester</span><b>${esc(t.requester)}</b>${Object.entries(t.fields).map(([k,v])=>`<span>${k}</span><b>${esc(v)}</b>`).join('')}</div></div></div>`;
@@ -449,8 +456,8 @@ function approvals(){
     <h2 class="mt" style="margin-top:18px">Decision history</h2>${db.approvals.map(a=>`<div class="spread tiny" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${a.id} · ${esc(a.title)}</span><span>${a.decision==='Approved'?'✓':'✕'} ${a.decision} · ${a.t}</span></div>`).join('')}</div>
   ${t?`<div class="card"><div class="spread"><span class="pill amber">Pending approval</span><span class="tid">${t.id}</span></div><h2 class="mt">${esc(t.title)}</h2><p>${esc(t.desc)}</p>
     <div class="meta"><span>Requester</span><b>${esc(t.requester)} · ${t.dept}</b>${Object.entries(t.fields).map(([k,v])=>`<span>${k}</span><b>${esc(v)}</b>`).join('')}${t.service==='Laptop'?`<span>Stock</span><b>${stock} laptop(s) available</b>`:''}</div>
-    <div class="frow"><label for="dec">Note / reason <small>(required to reject)</small></label><textarea id="dec" class="field" placeholder="Visible to the requester and IT"></textarea><div id="decErr"></div></div>
-    <div class="row"><button class="btn ok" onclick="decide('${t.id}',true)">✓ Approve</button><button class="btn danger" onclick="decide('${t.id}',false)">✕ Reject</button></div><p class="tiny mt">Only you can decide; the AI has no approval rights. A decision cannot be changed afterwards.</p></div>`:'<div class="card empty">Select a request.</div>'}</div>`;
+    <div class="frow"><label for="dec">Note <small>(needed if you reject)</small></label><textarea id="dec" class="field" placeholder="Visible to the requester and IT"></textarea><div id="decErr"></div></div>
+    <div class="row"><button class="btn ok" onclick="decide('${t.id}',true)">✓ Approve</button><button class="btn danger" onclick="decide('${t.id}',false)">✕ Reject</button></div><p class="tiny mt">Only a manager can decide — the AI can't. Decisions can't be changed later.</p></div>`:'<div class="card empty">Select a request.</div>'}</div>`;
 }
 function decide(id,ok){
   const t=ticket(id), note=$('#dec').value.trim();
@@ -467,16 +474,62 @@ function reports(){
   <div class="grid g4">${[['Tickets','223',''],['SLA met','91%','green'],['Reopen rate','4.0%',''],['Solved by self-service','18%','violet']].map(k=>`<div class="card kpi"><span class="tiny">${k[0]}</span><div class="n">${k[1]}</div></div>`).join('')}</div>
   <div class="split mt" style="margin-top:18px"><div class="card"><h2>Ticket volume per week</h2><div class="chart" style="margin-bottom:24px">${weeks.map(w=>`<div style="height:${w[0]*3}px" title="${w[0]} tickets"><span>${w[1]} · ${w[0]}</span></div>`).join('')}</div>
     <h2>SLA compliance by type</h2>${[['Incident',88],['Service Request',95],['Change',100]].map(r=>`<div class="spread tiny mt"><span>${r[0]}</span><b>${r[1]}%</b></div><div class="bar"><i style="width:${r[1]}%"></i></div>`).join('')}</div>
-  <div class="card"><h2>Breach watch</h2>${db.tickets.filter(t=>t.sla==='amber'||t.status==='Submitted').map(t=>`<a class="qa mb" href="#/it/tickets/${t.id}" style="padding:11px"><strong>${t.id} · ${esc(t.title)}</strong><span>${t.sla==='amber'?'⚠ 80% of target used':'Unassigned'} · ${esc(t.due)}</span></a>`).join('')}</div></div>`;
+  <div class="card"><h2>At-risk tickets</h2>${db.tickets.filter(t=>t.sla==='amber'||t.status==='Submitted').map(t=>`<a class="qa mb" href="#/it/tickets/${t.id}" style="padding:11px"><strong>${t.id} · ${esc(t.title)}</strong><span>${t.sla==='amber'?'⚠ 80% of the time used':'Unassigned'} · ${esc(t.due)}</span></a>`).join('')}</div></div>`;
 }
 
 /* ---------------------------------------------------------------- specified-only pages */
 const SPEC={
-  '/it/kb':['SCR-26','KB Editor',['My drafts','Editor','Visibility','Submit for review']],
-  '/manage/sla':['SCR-34','SLA Policies',['Business calendar','Targets matrix','Alert thresholds','Pause rules']],
-  '/manage/kb':['SCR-32','KB Review',['Review queue','Diff & preview','Publish / retire']],
-  '/profile':['SCR-02','My Profile',['Profile details','Role & permissions','Notification preferences','Session']],
+  '/it/kb':['SCR-26','KB Editor',['My guides','Editor','Who can read it','Send for review']],
+  '/manage/sla':['SCR-34','SLA Policies',['Working hours','Targets','Alerts','Pause rules']],
+  '/manage/kb':['SCR-32','KB Review',['To review','Compare & preview','Publish or retire']],
 };
+
+/* ---------------------------------------------------------------- sign in & profile */
+const PEOPLE={
+  employee:{name:ME,email:'an@acme.example',phone:'0901 234 567',dept:'Sales',loc:'HQ · Floor 3',role:'Employee'},
+  staff:{name:'Hoang Minh',email:'minh@acme.example',phone:'0902 345 678',dept:'IT',loc:'HQ · Floor 1',role:'IT Staff'},
+  manager:{name:'Quang Le',email:'quang@acme.example',phone:'0903 456 789',dept:'IT',loc:'HQ · Floor 1',role:'IT Manager'},
+};
+const LOGINS={'an@acme.example':['employee',['Acme Technology','Acme Logistics']],'minh@acme.example':['staff',['Acme Technology']],'quang@acme.example':['manager',['Acme Technology']]};
+function signIn(){
+  const f=$('#signin'), email=f.email.value.trim().toLowerCase(), pw=f.password.value, acc=LOGINS[email];
+  ui.login={email,error:null,companies:null};
+  if(!acc||pw!=='demo1234'){ui.login.error='Email or password is incorrect, or this account cannot sign in right now.';render();return}
+  if(acc[1].length>1&&!f.company){ui.login.companies=acc[1];render();return}
+  ui.role=acc[0]; ui.login=null; toast(`Signed in to ${f.company?f.company.value:acc[1][0]}`);
+  go({employee:'#/app',staff:'#/it',manager:'#/manage/approvals'}[ui.role]);
+}
+function login(){
+  const l=ui.login||{};
+  return `<div class="auth-wrap"><section class="auth-intro"><div class="brand"><span class="logo">◈</span><span>SmartDesk</span></div>
+    <h1>IT help, without the chasing.</h1><p>Ask a question, request a laptop or report a problem — and always know who is on it.</p>
+    <ul><li>✦ Answers from your company's own guides</li><li>▦ The right form for every request</li><li>≡ Clear status from start to finish</li></ul></section>
+  <section class="auth-form"><form id="signin" class="card" novalidate onsubmit="event.preventDefault();signIn()"><h2 style="font-size:22px">Sign in</h2><p>Use your work email.</p>
+    ${l.error?`<div class="banner warn" role="alert">${esc(l.error)}</div>`:''}
+    <div class="frow"><label for="email">Work email</label><input id="email" name="email" type="email" class="field" autocomplete="username" value="${esc(l.email||'')}" placeholder="name@company.com"></div>
+    <div class="frow"><label for="password">Password</label><div class="row" style="flex-wrap:nowrap"><input id="password" name="password" type="password" class="field" autocomplete="current-password"><button type="button" class="btn ghost" onclick="const p=$('#password');p.type=p.type==='password'?'text':'password';this.textContent=p.type==='password'?'Show':'Hide'">Show</button></div></div>
+    ${l.companies?`<div class="frow"><label for="company">Your email belongs to more than one company. Choose one:</label><select id="company" name="company" class="field">${l.companies.map(c=>`<option>${c}</option>`).join('')}</select></div>`:''}
+    <button class="btn" style="width:100%;justify-content:center">${l.companies?'Continue':'Sign in'}</button>
+    <p class="tiny mt">Forgot your password? Ask your IT team or use the reset link in your invitation email.</p>
+    <p class="tiny" style="border-top:1px solid var(--line);padding-top:10px">Demo accounts: an@ / minh@ / quang@acme.example · password <b>demo1234</b></p></form></section></div>`;
+}
+function profile(){
+  const p=PEOPLE[ui.role], e=ui.errors;
+  return head('Account','My Profile','Keep your details up to date so IT can reach you.')+`<div class="split"><form class="card" novalidate onsubmit="event.preventDefault();saveProfile(this)"><h2>Your details</h2>
+    ${[['Full name','name'],['Phone','phone'],['Department','dept'],['Location','loc']].map(([l,k])=>`<div class="frow"><label for="p_${k}">${l}</label><input id="p_${k}" name="${k}" class="field ${e[k]?'invalid':''}" value="${esc((ui.formData||{})[k]??p[k])}">${e[k]?`<div class="err">${e[k]}</div>`:''}</div>`).join('')}
+    <h2 class="mt" style="margin-top:20px">Notifications</h2>
+    ${['Updates on my tickets','Approval requests and decisions','Weekly summary'].map((n,i)=>`<label class="row" style="margin:8px 0"><input type="checkbox" ${i<2?'checked':''}> ${n}</label>`).join('')}
+    <div class="row mt"><button class="btn">Save changes</button></div></form>
+  <div><div class="card"><h2>Your role</h2><div class="meta"><span>Email</span><b>${p.email}</b><span>Company</span><b>Acme Technology</b><span>Role</span><b>${p.role}</b></div><p class="tiny">Only an Org Admin can change your role.</p></div>
+    <div class="card"><h2>Sign out</h2><p>End your session on this device.</p><a class="btn sec" href="#/login">Sign out</a></div></div></div>`;
+}
+function saveProfile(f){
+  const d=Object.fromEntries(new FormData(f)); ui.errors={}; ui.formData=d;
+  if(!d.name.trim())ui.errors.name='Please enter your name.';
+  if(!/^[0-9 +()-]{8,}$/.test(d.phone.trim()))ui.errors.phone='Use digits only, for example 0901 234 567.';
+  if(!Object.keys(ui.errors).length){Object.assign(PEOPLE[ui.role],d);ui.formData=null;toast('Profile saved')}
+  render();
+}
 function spec(path){const[id,name,secs]=SPEC[path];return head(id,name,'Specified in the information architecture; not built in this prototype. Wireframe of its sections:')+`<div class="grid g2">${secs.map(s=>`<div class="wf"><b>${s}</b><span class="tiny">Section placeholder</span></div>`).join('')}</div>`}
 function notFound(){return head('404','Not found','This record does not exist or you do not have access to it.')+`<a class="btn" href="${ui.role==='employee'?'#/app':ui.role==='staff'?'#/it':'#/manage/approvals'}">Back to home</a>`}
 
@@ -486,17 +539,33 @@ const ROUTES=[
   [/^\/app\/catalog$/,catalog,'Service Catalog'],[/^\/app\/requests\/new\/(\w+)$/,newRequest,'New Request'],[/^\/app\/requests$/,myRequests,'My Requests'],[/^\/app\/requests\/([\w-]+)$/,requestDetail,'Request Detail'],[/^\/app\/assets$/,myAssets,'My Assets'],
   [/^\/it$/,agentHome,'Dashboard'],[/^\/it\/tickets$/,queue,'Ticket Queue'],[/^\/it\/tickets\/([\w-]+)$/,agentTicket,'Ticket Detail'],[/^\/it\/fulfilment\/([\w-]+)$/,fulfilment,'Fulfilment'],[/^\/it\/assets$/,inventory,'Asset Inventory'],
   [/^\/manage\/approvals$/,approvals,'Approvals'],[/^\/manage\/reports$/,reports,'SLA & Reports'],
+  [/^\/profile$/,profile,'My Profile'],
 ];
+// Demo states used by tools/capture_ui.py (#/route?demo=name&role=staff).
+const DEMOS={
+  answer:()=>ask('My VPN says authentication timed out'),
+  vpn:()=>{ask('My VPN says authentication timed out');aiNotFixed();ask('macOS 14');ask('Authentication timed out')},
+  nosource:()=>ask('Can I expense a home router?'),
+  status:()=>ask('Where is my ticket INC-1042?'),
+  invalid:()=>setTimeout(()=>{document.querySelector('form.card [name=Recipient]').value='';document.querySelector('form.card').requestSubmit()}),
+  resolve:()=>setTimeout(()=>{const s=$('#st');s.value='Resolved';s.onchange();saveTicket('INC-1042')}),
+  internal:()=>{ui.noteMode='internal'},
+  reject:()=>setTimeout(()=>decide('SR-1038',false)),
+  approve:()=>setTimeout(()=>{$('#dec').value='Approved for the new hire. Standard configuration is fine.';decide('SR-1038',true)}),
+  approved:()=>{const t=ticket('SR-1038');t.status='Approved';t.approvedBy='Quang Le';t.assignee='Hoang Minh';addEvent(t,'Quang Le (IT Manager)','Approved')},
+  signinerror:()=>{ui.login={email:'an@acme.example',error:'Email or password is incorrect, or this account cannot sign in right now.'}},
+  company:()=>{ui.login={email:'an@acme.example',companies:LOGINS['an@acme.example'][1]}},
+  profileerror:()=>setTimeout(()=>{$('#p_phone').value='call me';document.querySelector('form.card').requestSubmit()}),
+};
 let lastPath='';
 function render(){
-  const [path,query]=(location.hash.slice(1)||'/app').split('?');
+  const [path,qs]=(location.hash.slice(1)||'/login').split('?'), q=new URLSearchParams(qs||'');
   if(path!==lastPath){ui.errors={};ui.formData=null;lastPath=path}
-  if(path.startsWith('/manage'))ui.role='manager'; else if(path.startsWith('/it')&&ui.role==='employee')ui.role='staff'; else if(path.startsWith('/app'))ui.role='employee';
-  if(query==='demo=vpn'&&!ui.demo){ui.demo=1;ask('My VPN says authentication timed out');aiNotFixed();ask('macOS 14');ask('Authentication timed out')}
-  if(query==='demo=nosource'&&!ui.demo){ui.demo=1;ask('Can I expense a home router?')}
-  if(query==='demo=resolve'&&!ui.demo){ui.demo=1;setTimeout(()=>{const s=$('#st');s.value='Resolved';s.onchange();saveTicket('INC-1042')},0)}
-  if(query==='demo=reject'&&!ui.demo){ui.demo=1;setTimeout(()=>decide('SR-1038',false),0)}
-  if(query==='demo=invalid'&&!ui.demo){ui.demo=1;setTimeout(()=>{document.querySelector('form.card [name=Recipient]').value='';document.querySelector('form.card').requestSubmit()},0)}
+  if(q.get('role'))ui.role=q.get('role');
+  else if(path.startsWith('/manage'))ui.role='manager'; else if(path.startsWith('/it')&&ui.role==='employee')ui.role='staff'; else if(path.startsWith('/app'))ui.role='employee';
+  if(q.get('demo')&&!ui.demo&&DEMOS[q.get('demo')]){ui.demo=1;DEMOS[q.get('demo')]()}
+  document.body.classList.toggle('auth',path==='/login');
+  if(path==='/login'){$('#app').innerHTML=login();return}
   renderNav(path);
   let html=null,label='';
   for(const[re,fn,l] of ROUTES){const m=path.match(re);if(m){html=fn(m[1]);label=l;break}}
@@ -507,7 +576,7 @@ function render(){
 }
 $('#role').addEventListener('change',e=>{ui.role=e.target.value;go({employee:'#/app',staff:'#/it',manager:'#/manage/approvals'}[ui.role]);render()});
 window.addEventListener('hashchange',render);
-ui.role='employee'; render();
+ui.role='employee'; ui.login=null; render();
 </script>
 </body>
 </html>

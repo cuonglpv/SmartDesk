@@ -56,7 +56,7 @@ The API enforces role, tenant and ownership; hiding controls in the UI is only f
 
 ### 2.3 INVEST backlog
 
-The backlog has 38 user stories, one per use case. Each story has dependencies, a positive and a negative acceptance criterion, and a per-story INVEST review.
+The backlog has 38 user stories, one per use case. Each story lists its dependencies, links to an `AC-UCxx` acceptance block and has a per-story INVEST review. Every use case is specified with actor, preconditions, main flow, alternatives, permission and result.
 
 | Criterion | Meaning in SmartDesk |
 |---|---|
@@ -74,7 +74,7 @@ US12–US15   AI assistant                  US33–US35   Knowledge base
 US16–US22   Ticket management             US36–US38   SLA and reporting
 ```
 
-Details: [Use cases](docs/02-use-cases.md) · [INVEST requirements](docs/03-invest-requirements.md).
+Details: [Use cases and specifications](docs/02-use-cases.md) · [INVEST requirements](docs/03-invest-requirements.md) · [Acceptance criteria](docs/06-acceptance-criteria.md).
 
 ## 3. Information Architecture — Relume Sitemap
 
@@ -94,19 +94,23 @@ Manager Console, Admin and shared pages, the full screen inventory and the use-c
 
 ## 4. UI/UX
 
-Principles, flows, screen states and the clickable prototype are documented in [UI/UX](docs/05-ui-ux.md). The prototype is a single file: [`prototype/index.html`](prototype/index.html).
+Principles, flows, screen states and 40 prototype screenshots grouped by role (`common/`, `employee/`, `it-staff/`, `it-manager/`) are in [UI/UX](docs/05-ui-ux.md). The prototype is a single file: [`prototype/index.html`](prototype/index.html).
 
-### AI Assistant — cited answer and ticket draft
+### Sign in
 
-![AI Assistant](docs/images/ui/02-ai-assistant-draft.png)
+![Sign in](docs/images/ui/common/01-sign-in.png)
 
-### IT Staff — ticket detail
+### Employee — AI assistant and ticket draft
 
-![Ticket detail](docs/images/ui/08-agent-ticket-detail.png)
+![AI Assistant](docs/images/ui/employee/03-ai-ticket-draft.png)
 
-### IT Manager — approval inbox
+### IT Staff — ticket with an IT-only note
 
-![Approval inbox](docs/images/ui/11-manager-approval-reject-reason.png)
+![Ticket detail](docs/images/ui/it-staff/04-internal-note.png)
+
+### IT Manager — rejecting needs a reason
+
+![Approval inbox](docs/images/ui/it-manager/02-reject-needs-reason.png)
 
 ## Repository layout
 
@@ -119,6 +123,7 @@ SmartDesk/
 │   ├── 03-invest-requirements.md
 │   ├── 04-information-architecture.md
 │   ├── 05-ui-ux.md
+│   ├── 06-acceptance-criteria.md
 │   ├── mindmap/                       # smartdesk.xmind + exported PNGs
 │   └── images/                        # use-cases/, relume/, ui/
 ├── prototype/index.html               # Clickable UX prototype (mock data)

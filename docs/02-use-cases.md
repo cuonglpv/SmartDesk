@@ -66,37 +66,37 @@ The model is split into three views so each stays readable; together they cover 
 | UC04 | Identity & Tenant | Invite, lock and assign member roles | Org Admin | P0 |
 | UC05 | Identity & Tenant | Activate or suspend a tenant | Platform Admin | P2 |
 | UC06 | Employee Self-service | Browse the IT service catalog | Employee | P0 |
-| UC07 | Employee Self-service | Submit a request through a typed form | Employee | P0 |
+| UC07 | Employee Self-service | Submit a request with the right form | Employee | P0 |
 | UC08 | Employee Self-service | Find and track my tickets | Employee | P0 |
 | UC09 | Employee Self-service | Add comments and files to my ticket | Employee | P0 |
 | UC10 | Employee Self-service | Confirm resolution or reopen a ticket | Employee | P0 |
 | UC11 | Employee Self-service | View assets assigned to me | Employee | P1 |
-| UC12 | AI Assistant | Ask FAQs answered from internal sources | Employee (+ AI Provider) | P0 |
+| UC12 | AI Assistant | Ask a question and get an answer from company guides | Employee (+ AI Provider) | P0 |
 | UC13 | AI Assistant | Get step-by-step troubleshooting | Employee (+ AI Provider) | P1 |
-| UC14 | AI Assistant | Draft a ticket through conversation | Employee (+ AI Provider) | P0 |
-| UC15 | AI Assistant | Ask my ticket status in natural language | Employee (+ AI Provider) | P1 |
+| UC14 | AI Assistant | Turn a chat into a ticket draft | Employee (+ AI Provider) | P0 |
+| UC15 | AI Assistant | Ask in chat where my ticket stands | Employee (+ AI Provider) | P1 |
 | UC16 | Ticket Management | View and filter the ticket queue | IT Staff | P0 |
 | UC17 | Ticket Management | Triage and set ticket priority | IT Staff | P0 |
 | UC18 | Ticket Management | Assign or pick up a ticket | IT Staff, IT Manager | P0 |
 | UC19 | Ticket Management | Update status and technical notes | IT Staff | P0 |
 | UC20 | Ticket Management | Transfer or escalate a ticket | IT Staff, IT Manager | P1 |
 | UC21 | Ticket Management | Resolve and close a ticket | IT Staff | P0 |
-| UC22 | Ticket Management | Link a ticket to an asset or ticket | IT Staff | P1 |
+| UC22 | Ticket Management | Link a ticket to a device or another ticket | IT Staff | P1 |
 | UC23 | Catalog & Approval | Manage request types and forms | Org Admin | P0 |
 | UC24 | Catalog & Approval | Configure approval rules | IT Manager | P1 |
 | UC25 | Catalog & Approval | Approve or reject a request with reason | IT Manager | P0 |
-| UC26 | Catalog & Approval | Perform and record fulfilment work | IT Staff | P1 |
-| UC27 | Catalog & Approval | Assess and manage an ISP change | IT Manager | P2 |
-| UC28 | IT Assets | Register and update IT assets | IT Staff | P0 |
+| UC26 | Catalog & Approval | Carry out and record the delivery work | IT Staff | P1 |
+| UC27 | Catalog & Approval | Review and plan an internet provider change | IT Manager | P2 |
+| UC28 | IT Assets | Add and update IT devices | IT Staff | P0 |
 | UC29 | IT Assets | Assign and hand over a device | IT Staff | P0 |
-| UC30 | IT Assets | Recover a device from an employee | IT Staff | P1 |
-| UC31 | IT Assets | Log asset maintenance and repair | IT Staff | P2 |
-| UC32 | IT Assets | View inventory and asset history | IT Manager | P1 |
-| UC33 | Knowledge Base | Create and edit KB article drafts | IT Staff | P0 |
-| UC34 | Knowledge Base | Review, publish and retire KB articles | IT Manager | P0 |
-| UC35 | Knowledge Base | Search and read KB articles without AI | Employee | P0 |
-| UC36 | SLA & Reporting | Configure SLA by type and priority | IT Manager | P1 |
-| UC37 | SLA & Reporting | Receive near-breach and breach alerts | IT Manager | P1 |
+| UC30 | IT Assets | Take a device back from an employee | IT Staff | P1 |
+| UC31 | IT Assets | Log repairs and maintenance | IT Staff | P2 |
+| UC32 | IT Assets | View device stock and history | IT Manager | P1 |
+| UC33 | Knowledge Base | Write and edit guide drafts | IT Staff | P0 |
+| UC34 | Knowledge Base | Review, publish and retire guides | IT Manager | P0 |
+| UC35 | Knowledge Base | Search and read guides without the AI | Employee | P0 |
+| UC36 | SLA & Reporting | Set SLA targets by type and priority | IT Manager | P1 |
+| UC37 | SLA & Reporting | Get alerts when a deadline is at risk | IT Manager | P1 |
 | UC38 | SLA & Reporting | View and export operations reports | IT Manager | P1 |
 
 ## Shared rules applied to every use case
@@ -171,68 +171,385 @@ stateDiagram-v2
 
 `Cancelled` is allowed from any non-final state by the requester (before work starts) or by IT with a reason.
 
-## Detailed use cases
+## Permissions
 
-### UC01 Sign in and sign out
+Each use case is guarded by one permission key. The API checks the key, then the tenant, then ownership where marked *(own)*.
+
+| Permission | Employee | IT Staff | IT Manager | Org Admin | Platform Admin |
+|---|---|---|---|---|---|
+| `profile.self`, `notification.read` | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `catalog.read`, `request.create`, `kb.read` | ✓ | ✓ | ✓ | ✓ | |
+| `ticket.readOwn`, `ticket.commentOwn`, `ticket.confirmOwn`, `asset.readOwn` *(own)* | ✓ | ✓ | ✓ | ✓ | |
+| `ai.ask`, `ai.draft`, `ai.myTickets` *(own)* | ✓ | ✓ | ✓ | ✓ | |
+| `ticket.queue`, `ticket.triage`, `ticket.update`, `ticket.resolve`, `ticket.link` | | ✓ | ✓ | | |
+| `ticket.assign`, `ticket.transfer` | | ✓ | ✓ | | |
+| `fulfilment.perform`, `asset.write`, `asset.assign`, `asset.recover`, `asset.maintain` | | ✓ | | | |
+| `asset.read` | | ✓ | ✓ | | |
+| `kb.draft` | | ✓ | ✓ | | |
+| `kb.publish`, `approval.decide`, `approval.rules`, `change.manage`, `sla.manage`, `sla.alerts`, `report.read` | | | ✓ | | |
+| `org.settings`, `members.manage`, `catalog.manage` | | | | ✓ | |
+| `tenant.lifecycle` | | | | | ✓ |
+
+## Use case specifications
+
+Every use case lists actor, preconditions, main flow, alternatives, permission and result. Acceptance criteria are in [06 — Acceptance criteria](06-acceptance-criteria.md) under the same number.
+
+### Identity & Tenant
+
+#### UC01 Sign in and sign out
 
 - **Actor:** User (all roles)
-- **Preconditions:** active account in an active tenant
-- **Main flow:** enter work email and password → backend verifies credentials, account and tenant status → if the email belongs to several tenants, pick one → land on the role's home page.
-- **Alternative:** wrong credentials, locked account or suspended tenant → generic error, stay on Sign In.
-- **Result:** authenticated session scoped to one tenant; sign-out invalidates the session on this client.
+- **Preconditions:** active member account in an active tenant
+- **Main flow:** enter work email and password → backend verifies credentials, member status and tenant status → if the email belongs to several tenants, choose one → open the role's home page. Sign out from the avatar menu ends the session.
+- **Alternative:** wrong credentials, locked member or suspended tenant → one generic error, stay on Sign In.
+- **Permission:** public (sign in); authenticated (sign out)
+- **Result:** a session scoped to exactly one tenant
 
-### UC07 Submit a request through a typed form
+#### UC02 View and edit my profile
+
+- **Actor:** User
+- **Preconditions:** signed in
+- **Main flow:** open My Profile → edit name, phone, department, location, avatar, notification preferences → save.
+- **Alternative:** invalid phone → field error; attempt to change role or email → rejected.
+- **Permission:** `profile.self`
+- **Result:** updated contact data used for routing and notifications
+
+#### UC03 Update organization settings
+
+- **Actor:** Org Admin
+- **Preconditions:** signed in as Org Admin
+- **Main flow:** open Organization Settings → edit company profile, locations, departments, timezone → save.
+- **Alternative:** duplicate location or invalid timezone → field error.
+- **Permission:** `org.settings`
+- **Result:** tenant settings updated; SLA calendars and routing use the new values
+
+#### UC04 Invite, lock and assign member roles
+
+- **Actor:** Org Admin
+- **Preconditions:** signed in as Org Admin
+- **Main flow:** open Members & Roles → invite by email with a role → member accepts → later change role or lock/unlock.
+- **Alternative:** email already a member → error; locking the last Org Admin → refused.
+- **Permission:** `members.manage`
+- **Result:** access to the tenant matches the member list
+
+#### UC05 Activate or suspend a tenant *(P2)*
+
+- **Actor:** Platform Admin
+- **Preconditions:** tenant exists
+- **Main flow:** open Tenants → choose tenant → Suspend (with reason) or Activate → confirm.
+- **Alternative:** —
+- **Permission:** `tenant.lifecycle`
+- **Result:** suspended tenant becomes read-only; no ticket content is exposed to the Platform Admin
+
+### Employee Self-service
+
+#### UC06 Browse the IT service catalog
+
+- **Actor:** Employee
+- **Preconditions:** signed in; at least one published request type
+- **Main flow:** open Service Catalog → search or pick a category (*Report a problem / Request something / Propose a change*) → read approval need and SLA → start request.
+- **Alternative:** not sure which service → open the AI Assistant.
+- **Permission:** `catalog.read`
+- **Result:** the employee lands on the right request form
+
+#### UC07 Submit a request with the right form
 
 - **Actor:** Employee
 - **Preconditions:** request type is published and the employee may use it
-- **Main flow:** open catalog → choose a service → form shows fields of that type, approval need and SLA target → fill required fields, attach files → review → submit → backend validates and creates exactly one ticket (`Submitted`, or `PendingApproval` when the type needs approval) → Request Detail with ticket ID.
-- **Alternative:** missing/invalid field → inline error, no ticket; double click or retry → idempotency key returns the same ticket.
-- **Result:** ticket linked to requester, tenant and request-type version.
+- **Main flow:** form shows the fields of that type, approval need and SLA → fill required fields, attach files → submit → backend validates and creates exactly one ticket (`Submitted`, or `PendingApproval` when approval is needed) → Request Detail with ticket ID.
+- **Alternative:** missing/invalid field → inline error, values kept, no ticket; repeated submit → idempotency key returns the same ticket.
+- **Permission:** `request.create`
+- **Result:** ticket linked to requester, tenant and request-type version
 
-### UC12 Ask FAQs answered from internal sources
+#### UC08 Find and track my tickets
 
-- **Actors:** Employee; AI Provider (secondary)
-- **Main flow:** employee asks a question → backend retrieves only **published** KB articles the employee may read in the same tenant → AI composes an answer with citations → each citation opens the source article.
-- **Alternative:** no relevant source → assistant says it has no documented answer and offers the catalog or a ticket draft; it does not guess.
-- **Result:** answer and sources logged for quality review (no private ticket data sent to the model).
+- **Actor:** Employee
+- **Preconditions:** signed in
+- **Main flow:** open My Requests → search or filter → open a ticket → see status, progress, assignee and SLA.
+- **Alternative:** no tickets → empty state with "New request".
+- **Permission:** `ticket.readOwn` *(own)*
+- **Result:** the employee knows the progress without contacting IT
 
-### UC14 Draft a ticket through conversation
+#### UC09 Add comments and files to my ticket
 
-- **Actors:** Employee; AI Provider (secondary)
-- **Main flow:** issue not solved → AI proposes the request type → asks only the missing required fields of that type → shows a draft (type, title, summary, fields, attachments) → employee edits and confirms → backend runs the normal UC07 validation and creates the ticket.
-- **Alternative:** employee discards the draft → nothing is stored; AI suggests a Change but data is incomplete → draft cannot be confirmed.
-- **Result:** the AI never submits; only the employee's confirmation creates a ticket.
+- **Actor:** Employee
+- **Preconditions:** own ticket that is not `Closed` or `Rejected`
+- **Main flow:** open Request Detail → write a comment and/or attach a file → send → assignee is notified.
+- **Alternative:** file too large or not allowed → error.
+- **Permission:** `ticket.commentOwn` *(own)*
+- **Result:** public timeline updated
 
-### UC10 Confirm resolution or reopen a ticket
+#### UC10 Confirm resolution or reopen a ticket
 
 - **Actor:** Employee (requester)
 - **Preconditions:** ticket is `Resolved`
-- **Main flow:** employee reads the resolution note → Confirm → `Closed`.
-- **Alternative:** still broken → Reopen with a reason within 7 days → `Reopened` → back to the assignee; after 7 days without action → auto `Closed`.
+- **Main flow:** read the resolution note → Confirm → `Closed`.
+- **Alternative:** still broken → Reopen with reason within 7 days → `Reopened`; no action for 7 days → auto `Closed`.
+- **Permission:** `ticket.confirmOwn` *(own)*
+- **Result:** tickets close only when the requester agrees or the window expires
 
-### UC17–UC21 Work a ticket (IT Staff)
+#### UC11 View assets assigned to me
 
-- **Main flow:** open queue (UC16) → open unassigned ticket → set type and priority (UC17) → pick up or assign (UC18) → reply publicly or add internal notes, move status along the allowed transitions (UC19) → transfer or escalate with a reason if needed (UC20) → enter a resolution note and set `Resolved` (UC21).
-- **Rules:** internal notes are never visible to the employee; invalid transitions return `409`; every change is in the audit timeline.
+- **Actor:** Employee
+- **Preconditions:** signed in
+- **Main flow:** open My Assets → see devices, tags and handover records → optionally report a problem with a device.
+- **Alternative:** no assets → empty state.
+- **Permission:** `asset.readOwn` *(own)*
+- **Result:** the employee knows which devices they are responsible for
 
-### UC25 Approve or reject a request with reason
+### AI Assistant
+
+#### UC12 Ask a question and get an answer from company guides
+
+- **Actors:** Employee; AI Provider (secondary)
+- **Preconditions:** signed in; KB has published articles
+- **Main flow:** ask a question → backend retrieves only published articles the employee may read in this tenant → AI composes an answer with citations → citation opens the article.
+- **Alternative:** no relevant source → "no documented answer", offer catalog or draft; nothing invented.
+- **Permission:** `ai.ask`
+- **Result:** cited answer; question and sources logged for quality review
+
+#### UC13 Get step-by-step troubleshooting *(extends UC12)*
+
+- **Actors:** Employee; AI Provider (secondary)
+- **Preconditions:** UC12 found a how-to article
+- **Main flow:** assistant lists the steps from the cited article → asks "It works now / Still not working".
+- **Alternative:** works → end, no ticket; not working → UC14.
+- **Permission:** `ai.ask`
+- **Result:** issue solved without IT, or a reason to draft a ticket
+
+#### UC14 Turn a chat into a ticket draft *(extends UC13)*
+
+- **Actors:** Employee; AI Provider (secondary)
+- **Preconditions:** issue not solved, or no source found
+- **Main flow:** assistant proposes a request type → asks only missing required fields → shows the draft → employee edits and confirms → backend runs UC07 validation and creates the ticket.
+- **Alternative:** discard → nothing stored; request type needs a full form (e.g. laptop) → open the form pre-filled.
+- **Permission:** `ai.draft` + `request.create`
+- **Result:** a complete ticket created only by the employee's confirmation
+
+#### UC15 Ask in chat where my ticket stands
+
+- **Actors:** Employee; AI Provider (secondary)
+- **Preconditions:** signed in
+- **Main flow:** ask "where is my ticket?" → read-only tool queries tickets of the current user → assistant answers with status and assignee and links to the ticket.
+- **Alternative:** asks about someone else's ticket → "I can only see your own tickets".
+- **Permission:** `ai.myTickets` *(own)*
+- **Result:** quick status without opening My Requests
+
+### Ticket Management
+
+#### UC16 View and filter the ticket queue
+
+- **Actor:** IT Staff
+- **Preconditions:** signed in as IT
+- **Main flow:** open Ticket Queue → choose view (Unassigned / My tickets / All permitted) → filter by type, status, priority, SLA → open a ticket.
+- **Alternative:** no match → empty state with "clear filters".
+- **Permission:** `ticket.queue`
+- **Result:** IT chooses the next ticket by priority and SLA
+
+#### UC17 Triage and set ticket priority
+
+- **Actor:** IT Staff
+- **Preconditions:** ticket `Submitted` or `Triaged`
+- **Main flow:** open ticket → confirm type and category → set priority → save → status `Triaged`.
+- **Alternative:** wrong type (e.g. a request filed as incident) → convert type with reason.
+- **Permission:** `ticket.triage`
+- **Result:** ticket follows the right workflow and SLA
+
+#### UC18 Assign or pick up a ticket
+
+- **Actors:** IT Staff, IT Manager
+- **Preconditions:** ticket not `Closed`
+- **Main flow:** Pick up (assign to me) or choose an assignee from the IT team → save → assignee notified.
+- **Alternative:** someone picked it up first → conflict message, reload.
+- **Permission:** `ticket.assign`
+- **Result:** one owner per ticket
+
+#### UC19 Update status and technical notes
+
+- **Actor:** IT Staff
+- **Preconditions:** assigned ticket
+- **Main flow:** reply publicly or add an internal note → move status along allowed transitions (e.g. `In Progress → Waiting for Employee`).
+- **Alternative:** invalid transition → refused.
+- **Permission:** `ticket.update`
+- **Result:** transparent progress; technical detail stays internal
+
+#### UC20 Transfer or escalate a ticket
+
+- **Actors:** IT Staff, IT Manager
+- **Preconditions:** ticket not `Closed`
+- **Main flow:** choose Transfer (another team) or Escalate (IT Manager) → enter reason → save → new owner notified.
+- **Alternative:** empty reason → error.
+- **Permission:** `ticket.transfer`
+- **Result:** hard or late tickets reach the right people with history intact
+
+#### UC21 Resolve and close a ticket
+
+- **Actor:** IT Staff
+- **Preconditions:** ticket `In Progress`, `Waiting for Employee` or `In Fulfilment`
+- **Main flow:** choose `Resolved` → enter resolution note → save → requester notified → UC10.
+- **Alternative:** no note → error, status unchanged.
+- **Permission:** `ticket.resolve`
+- **Result:** ticket waits for the requester's confirmation
+
+#### UC22 Link a ticket to a device or another ticket
+
+- **Actor:** IT Staff
+- **Preconditions:** ticket open
+- **Main flow:** Link → search asset tag or ticket ID → confirm → link shown on both records.
+- **Alternative:** record in another tenant or not found → not found.
+- **Permission:** `ticket.link`
+- **Result:** full context for diagnosis and asset history
+
+### Catalog, Approval and Fulfilment
+
+#### UC23 Manage request types and forms
+
+- **Actor:** Org Admin
+- **Preconditions:** signed in as Org Admin
+- **Main flow:** Catalog Builder → create or edit a type → define fields (type, required, help text, validation) → set ticket type, routing team, approval flag → preview as employee → publish a new version.
+- **Alternative:** missing routing or required field → cannot publish; hide a type → removed from catalog.
+- **Permission:** `catalog.manage`
+- **Result:** standard intake forms; tickets keep the version they were created with
+
+#### UC24 Configure approval rules
+
+- **Actor:** IT Manager
+- **Preconditions:** request type exists
+- **Main flow:** Approval Rules → choose request type → approver role or person → conditions → effective date → save.
+- **Alternative:** conflicting rules → error showing the overlapping rule.
+- **Permission:** `approval.rules`
+- **Result:** risky requests need sign-off; past decisions are unchanged
+
+#### UC25 Approve or reject a request with reason
 
 - **Actor:** IT Manager (configured approver)
-- **Preconditions:** request is `PendingApproval`
-- **Main flow:** open Approval Inbox → review requester, reason, needed-by date, stock availability → Approve (optional note) or Reject (reason required) → requester and IT are notified.
-- **Alternative:** decision already recorded → `409`, no second decision; non-approver → `403`.
+- **Preconditions:** request `PendingApproval`
+- **Main flow:** Approval Inbox → review requester, reason, needed-by date, stock → Approve (optional note) → IT notified.
+- **Alternative:** Reject with a required reason → requester notified; already decided → refused.
+- **Permission:** `approval.decide`
+- **Result:** only approved requests reach fulfilment
 
-### UC29 Assign and hand over a device
+#### UC26 Carry out and record the delivery work
+
+- **Actor:** IT Staff
+- **Preconditions:** request `Approved`, or a type without approval
+- **Main flow:** open Fulfilment Task → work through the checklist → record each step → complete → request `Resolved`.
+- **Alternative:** request still pending approval → page locked.
+- **Permission:** `fulfilment.perform`
+- **Result:** consistent service delivery with an audit trail
+
+#### UC27 Review and plan an internet provider change *(P2)*
+
+- **Actor:** IT Manager (with IT Staff for the assessment)
+- **Preconditions:** change proposal submitted from the catalog
+- **Main flow:** IT records impact, affected users, downtime and rollback plan → manager reviews in Change Review → approve → schedule maintenance window → IT implements manually → record result → close.
+- **Alternative:** reject or request more information.
+- **Permission:** `change.manage`
+- **Result:** infrastructure changes are planned and approved; never automated by SmartDesk
+
+### IT Assets
+
+#### UC28 Add and update IT devices
+
+- **Actor:** IT Staff
+- **Preconditions:** signed in as IT
+- **Main flow:** Asset Inventory → Add asset (tag, model, serial, purchase date, location) → save as `AVAILABLE`; later edit details or status.
+- **Alternative:** duplicate tag → error.
+- **Permission:** `asset.write`
+- **Result:** accurate stock and condition
+
+#### UC29 Assign and hand over a device
 
 - **Actor:** IT Staff
 - **Preconditions:** request `Approved`; asset `AVAILABLE`
-- **Main flow:** open fulfilment task → asset picker lists only matching available assets → reserve → hand over, record date and condition → asset `ASSIGNED` to the employee, linked to the ticket → request `Resolved`.
-- **Alternative:** another technician assigned the same asset first → `409`, pick another asset.
+- **Main flow:** Fulfilment Task → asset picker lists matching available assets → choose → hand over, record date and condition → asset `ASSIGNED` and linked to the ticket → request `Resolved`.
+- **Alternative:** asset taken by someone else meanwhile → conflict, choose another.
+- **Permission:** `asset.assign`
+- **Result:** ownership history per device
 
-### UC27 Assess and manage an ISP change (Phase 2)
+#### UC30 Take a device back from an employee
 
-- **Actor:** IT Manager (with IT Staff for the assessment)
-- **Main flow:** change proposal from the catalog → IT records impact, affected users, downtime and rollback plan → manager approves → maintenance window scheduled → IT implements **manually** → result recorded → closed.
-- **Rule:** SmartDesk never changes network configuration automatically.
+- **Actor:** IT Staff
+- **Preconditions:** asset `ASSIGNED`
+- **Main flow:** Asset Detail → Recover → record date and condition → asset `RETURNED`, then `AVAILABLE` or `MAINTENANCE`.
+- **Alternative:** asset not assigned → refused.
+- **Permission:** `asset.recover`
+- **Result:** stock stays accurate when people leave or swap devices
 
-**Related:** [INVEST requirements](03-invest-requirements.md) · [Information architecture](04-information-architecture.md)
+#### UC31 Log repairs and maintenance *(P2)*
+
+- **Actor:** IT Staff
+- **Preconditions:** asset not `RETIRED`
+- **Main flow:** Asset Detail → Maintenance log → add date, work done, technician, status before/after → save.
+- **Alternative:** —
+- **Permission:** `asset.maintain`
+- **Result:** repair history per device
+
+#### UC32 View device stock and history
+
+- **Actor:** IT Manager
+- **Preconditions:** signed in as IT Manager
+- **Main flow:** Asset Inventory → stock summary by status → filter → open an asset → history of holders and tickets.
+- **Alternative:** —
+- **Permission:** `asset.read`
+- **Result:** provisioning decisions based on real stock (read-only)
+
+### Knowledge Base
+
+#### UC33 Write and edit guide drafts
+
+- **Actor:** IT Staff
+- **Preconditions:** signed in as IT
+- **Main flow:** KB Editor → new draft (title, topic, steps, images, visibility) → save → submit for review.
+- **Alternative:** —
+- **Permission:** `kb.draft`
+- **Result:** draft visible to IT only, never to employees or the AI
+
+#### UC34 Review, publish and retire guides
+
+- **Actor:** IT Manager
+- **Preconditions:** article `In review` or `Published`
+- **Main flow:** KB Review → view changes → Publish → article searchable and indexed for the AI; or Retire a published article.
+- **Alternative:** send back to draft with comments.
+- **Permission:** `kb.publish`
+- **Result:** employees and the AI use only approved content
+
+#### UC35 Search and read guides without the AI
+
+- **Actor:** Employee
+- **Preconditions:** signed in
+- **Main flow:** Knowledge Base → search or filter by topic → open article → follow steps → rate helpfulness.
+- **Alternative:** still need help → open a request with the article linked.
+- **Permission:** `kb.read`
+- **Result:** a self-service path that does not depend on AI
+
+### SLA and Reporting
+
+#### UC36 Set SLA targets by type and priority
+
+- **Actor:** IT Manager
+- **Preconditions:** organization calendar set (UC03)
+- **Main flow:** SLA Policies → business hours and holidays → response/resolve targets per type and priority → warning threshold → pause rules → save.
+- **Alternative:** invalid or missing targets → error.
+- **Permission:** `sla.manage`
+- **Result:** explicit commitments applied to new tickets
+
+#### UC37 Get alerts when a deadline is at risk
+
+- **Actor:** IT Manager (also the assignee)
+- **Preconditions:** SLA policy active
+- **Main flow:** SLA job detects 80% or 100% of target → one notification per threshold → manager opens Breach watch → reassigns or escalates.
+- **Alternative:** job retry → no duplicate alert.
+- **Permission:** `sla.alerts`
+- **Result:** fewer missed tickets
+
+#### UC38 View and export operations reports
+
+- **Actor:** IT Manager
+- **Preconditions:** signed in as IT Manager
+- **Main flow:** SLA & Reports → choose date range, team, type, priority → read KPI cards and charts → export CSV or PDF.
+- **Alternative:** no data for the filters → empty state.
+- **Permission:** `report.read`
+- **Result:** measurable support performance
+
+**Related:** [INVEST requirements](03-invest-requirements.md) · [Acceptance criteria](06-acceptance-criteria.md) · [Information architecture](04-information-architecture.md)

@@ -100,75 +100,171 @@ SmartDesk never runs network changes itself.
 | 8 | IT Staff | `SCR-23` | Hand over | `SCR-25` Asset Detail / ticket resolved | Asset `ASSIGNED`, requester notified |
 | 9 | IT Staff → Employee | `SCR-22` | Resolve with note | **notification** → `SCR-17` | Confirm / reopen banner |
 
-## 5.4 Prototype screens
+## 5.4 Prototype screens by role
 
-All screens below are captured from the prototype with [`tools/capture_ui.py`](../tools/capture_ui.py).
+All screenshots come from the prototype and are grouped by role, like the reference project. Regenerate them with [`tools/capture_ui.py`](../tools/capture_ui.py).
 
-### Employee Home (`SCR-10`)
+```text
+docs/images/ui/
+├── common/       Sign in, company picker, not found          (4)
+├── employee/     Home, assistant, guides, requests, devices  (17)
+├── it-staff/     Dashboard, queue, ticket, delivery, devices  (10)
+└── it-manager/   Approvals, reports, read-only devices        (9)
+```
 
-Ask bar, quick actions, a "pending your action" banner, open tickets and popular guides.
+### Common
 
-![Employee Home](images/ui/01-employee-home.png)
+#### Sign In (`SCR-01`, UC01)
 
-### AI Assistant — cited answer, guided questions and draft (`SCR-11`, UC12–UC14)
+![Sign in](images/ui/common/01-sign-in.png)
 
-The draft panel stays "not submitted" until the employee confirms.
+#### Sign In — one message for every failed attempt
 
-![AI Assistant with ticket draft](images/ui/02-ai-assistant-draft.png)
+![Sign in error](images/ui/common/02-sign-in-error.png)
 
-### AI Assistant — no source found (`SCR-11`, UC12 negative path)
+#### Sign In — email belongs to more than one company
 
-The assistant refuses to guess and offers the catalog or a draft instead of inventing a citation.
+![Choose company](images/ui/common/03-sign-in-choose-company.png)
 
-![AI Assistant no-source fallback](images/ui/03-ai-assistant-no-source.png)
+#### Not found — another employee's ticket (`SCR-04`)
 
-### Service Catalog (`SCR-14`)
+![Not found](images/ui/common/04-not-found.png)
 
-![Service Catalog](images/ui/04-service-catalog.png)
+### Employee
 
-### New Request — validation (`SCR-15`, UC07)
+#### Home (`SCR-10`)
 
-![New request validation errors](images/ui/05-new-request-validation.png)
+![Employee home](images/ui/employee/01-home.png)
 
-### Request Detail — confirm or reopen (`SCR-17`, UC10)
+#### AI Assistant — answer with a source (`SCR-11`, UC12–UC13)
 
-![Request detail resolved](images/ui/06-request-detail-resolved.png)
+![AI answer with source](images/ui/employee/02-ai-answer-with-source.png)
 
-### Ticket Queue (`SCR-21`, UC16–UC18)
+#### AI Assistant — follow-up questions and ticket draft (UC14)
 
-![Ticket queue](images/ui/07-agent-queue.png)
+![AI ticket draft](images/ui/employee/03-ai-ticket-draft.png)
 
-### Ticket Detail — public reply vs internal note (`SCR-22`, UC19)
+#### AI Assistant — when it doesn't know (UC12)
 
-![Agent ticket detail](images/ui/08-agent-ticket-detail.png)
+![AI no source](images/ui/employee/04-ai-no-source.png)
 
-### Ticket Detail — resolution note required (`SCR-22`, UC21)
+#### AI Assistant — "where's my ticket?" (UC15)
 
-![Resolve requires a resolution note](images/ui/09-agent-resolve-validation.png)
+![AI ticket status](images/ui/employee/05-ai-ticket-status.png)
 
-### Fulfilment — locked until approval (`SCR-23`, UC26/UC29)
+#### Knowledge Base and guide (`SCR-12`, `SCR-13`, UC35)
 
-![Fulfilment locked](images/ui/10-fulfilment-locked.png)
+![Knowledge base](images/ui/employee/06-knowledge-base.png)
 
-### Approval Inbox — reject needs a reason (`SCR-30`, UC25)
+![KB article](images/ui/employee/07-kb-article.png)
 
-![Approval inbox](images/ui/11-manager-approval-reject-reason.png)
+#### Service Catalog (`SCR-14`, UC06)
 
-### SLA & Reports (`SCR-33`, UC37/UC38)
+![Service catalog](images/ui/employee/08-service-catalog.png)
 
-![SLA and reports](images/ui/12-manager-reports.png)
+#### New Request — form and errors (`SCR-15`, UC07)
 
-### Asset Inventory (`SCR-24`, UC28/UC32)
+![New request](images/ui/employee/09-new-request.png)
 
-![Asset inventory](images/ui/13-asset-inventory.png)
+![New request errors](images/ui/employee/10-new-request-errors.png)
+
+#### My Requests (`SCR-16`, UC08)
+
+![My requests](images/ui/employee/11-my-requests.png)
+
+#### Request Detail — in progress, waiting for approval, resolved (`SCR-17`, UC08–UC10)
+
+![Request in progress](images/ui/employee/12-request-in-progress.png)
+
+![Request waiting for approval](images/ui/employee/13-request-waiting-approval.png)
+
+![Request resolved](images/ui/employee/14-request-resolved.png)
+
+#### My Assets (`SCR-18`, UC11)
+
+![My assets](images/ui/employee/15-my-assets.png)
+
+#### My Profile — details and validation (`SCR-02`, UC02)
+
+![Profile](images/ui/employee/16-profile.png)
+
+![Profile error](images/ui/employee/17-profile-error.png)
+
+### IT Staff
+
+#### Dashboard (`SCR-20`, UC16)
+
+![IT dashboard](images/ui/it-staff/01-dashboard.png)
+
+#### Ticket Queue (`SCR-21`, UC16–UC18)
+
+![Ticket queue](images/ui/it-staff/02-ticket-queue.png)
+
+#### Ticket Detail — reply, IT-only note, resolve (`SCR-22`, UC17–UC21)
+
+![Ticket detail](images/ui/it-staff/03-ticket-detail.png)
+
+![Internal note](images/ui/it-staff/04-internal-note.png)
+
+![Resolve needs a note](images/ui/it-staff/05-resolve-needs-note.png)
+
+#### Fulfilment — locked, then ready after approval (`SCR-23`, UC26, UC29)
+
+![Fulfilment locked](images/ui/it-staff/06-fulfilment-locked.png)
+
+![Fulfilment ready](images/ui/it-staff/07-fulfilment-ready.png)
+
+#### Asset Inventory (`SCR-24`, UC28)
+
+![Asset inventory](images/ui/it-staff/08-asset-inventory.png)
+
+#### KB Editor — specified only (`SCR-26`, UC33)
+
+![KB editor](images/ui/it-staff/09-kb-editor-spec.png)
+
+#### My Profile (`SCR-02`)
+
+![IT staff profile](images/ui/it-staff/10-profile.png)
+
+### IT Manager
+
+#### Approval Inbox — review, reject needs a reason, approve (`SCR-30`, UC25)
+
+![Approval inbox](images/ui/it-manager/01-approval-inbox.png)
+
+![Reject needs a reason](images/ui/it-manager/02-reject-needs-reason.png)
+
+![Approved](images/ui/it-manager/03-approved.png)
+
+#### SLA & Reports (`SCR-33`, UC37–UC38)
+
+![SLA and reports](images/ui/it-manager/04-sla-reports.png)
+
+#### Ticket Queue (`SCR-21`, UC18, UC20)
+
+![Manager ticket queue](images/ui/it-manager/05-ticket-queue.png)
+
+#### Asset Inventory — read only (`SCR-24`, UC32)
+
+![Read-only inventory](images/ui/it-manager/06-asset-inventory-read-only.png)
+
+#### SLA Policies and KB Review — specified only (`SCR-34`, `SCR-32`)
+
+![SLA policies](images/ui/it-manager/07-sla-policies-spec.png)
+
+![KB review](images/ui/it-manager/08-kb-review-spec.png)
+
+#### My Profile (`SCR-02`)
+
+![Manager profile](images/ui/it-manager/09-profile.png)
 
 ### Prototype coverage
 
-| Built and interactive | Specified only (wireframe placeholder) |
-|---|---|
-| `SCR-10`–`SCR-18`, `SCR-20`–`SCR-24`, `SCR-30`, `SCR-33` | `SCR-02`, `SCR-26`, `SCR-32`, `SCR-34`; other pages exist only in the [IA](04-information-architecture.md) |
+| Built and interactive | Specified only (section placeholders) | Not in the prototype |
+|---|---|---|
+| `SCR-01`, `SCR-02`, `SCR-04`, `SCR-10`–`SCR-18`, `SCR-20`–`SCR-24`, `SCR-30`, `SCR-33` | `SCR-26`, `SCR-32`, `SCR-34` | `SCR-03`, `SCR-25`, `SCR-31`, `SCR-35`, `SCR-40`–`SCR-42`, `SCR-50` (see the [IA](04-information-architecture.md)) |
 
-Demo shortcuts: `#/app/assistant?demo=vpn`, `?demo=nosource`, `#/it/tickets/INC-1042?demo=resolve`, `#/manage/approvals?demo=reject`, `#/app/requests/new/laptop?demo=invalid`.
+Demo accounts on the Sign In page: `an@`, `minh@`, `quang@acme.example`, password `demo1234` (mock data only). The `?demo=` shortcuts used for the screenshots are listed in [`tools/capture_ui.py`](../tools/capture_ui.py).
 
 ## 5.5 Usability acceptance criteria
 

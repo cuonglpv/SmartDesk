@@ -15,7 +15,7 @@ Cross-cutting authentication, tenant isolation, authorization, validation, audit
 | **Valuable** | Every story names the benefit for Employee, IT Staff, IT Manager or Admin. |
 | **Estimable** | Role, input, output, state change and failure outcome are explicit; open values have documented defaults (reopen window 7 days, SLA warning at 80%). |
 | **Small** | One primary capability per story; larger ones list their task split (API, application, persistence, UI, tests). |
-| **Testable** | Each story has a positive and a negative acceptance criterion that can be checked through the UI or the API. |
+| **Testable** | Each story links to an `AC-UCxx` block with positive and negative criteria checkable through the UI or the API. |
 
 ## Backlog overview
 
@@ -32,161 +32,50 @@ US36–US38   SLA and reporting
 
 ## Product backlog
 
-| ID | User story | Value | Priority | Dependencies |
-|---|---|---|---|---|
-| US01 | As a **user**, I want to sign in and sign out so that only valid members reach my organization's workspace. | Protected access | P0 | Seeded tenant and account |
-| US02 | As a **user**, I want to view and edit my profile so that IT can contact and route me correctly. | Accurate contact data | P1 | US01 |
-| US03 | As an **Org Admin**, I want to update organization settings (name, timezone, locations, departments) so that routing and SLA use the right context. | Correct tenant setup | P1 | US01 |
-| US04 | As an **Org Admin**, I want to invite, lock and assign roles to members so that access stays controlled. | Access control | P0 | US01 |
-| US05 | As a **Platform Admin**, I want to activate or suspend a tenant so that I can manage the SaaS lifecycle. | Tenant lifecycle | P2 | — |
-| US06 | As an **employee**, I want to browse the IT service catalog so that I can find the right request type. | Right request first time | P0 | US23 |
-| US07 | As an **employee**, I want to submit a request through a form for that service so that IT gets complete data. | Complete tickets | P0 | US06 |
-| US08 | As an **employee**, I want to find and track my tickets so that I know the progress and who is handling them. | Transparency | P0 | US07 |
-| US09 | As an **employee**, I want to add comments and files to my ticket so that I can give evidence without email. | Fewer back-and-forth | P0 | US08 |
-| US10 | As an **employee**, I want to confirm resolution or reopen within 7 days so that tickets close only when the problem is really fixed. | Real resolution | P0 | US21 |
-| US11 | As an **employee**, I want to see the devices assigned to me so that I know what I am responsible for. | Accountability | P1 | US29 |
-| US12 | As an **employee**, I want to ask questions answered from internal articles with sources so that I can trust and verify the answer. | Trusted self-service | P0 | US34 |
-| US13 | As an **employee**, I want step-by-step troubleshooting so that I can fix common issues myself. | Fewer tickets | P1 | US12 |
-| US14 | As an **employee**, I want the assistant to prepare a ticket draft from our conversation so that I do not need to know ticket categories. | Faster intake | P0 | US07, US12 |
-| US15 | As an **employee**, I want to ask about my ticket status in plain language so that I get an answer without searching. | Quick status | P1 | US08 |
-| US16 | As **IT Staff**, I want to view and filter the ticket queue so that I can choose what to work on next. | Prioritized work | P0 | US07 |
-| US17 | As **IT Staff**, I want to set ticket type and priority so that tickets follow the right workflow and SLA. | Correct routing | P0 | US16 |
-| US18 | As **IT Staff or IT Manager**, I want to assign or pick up a ticket so that each ticket has one owner. | Clear ownership | P0 | US16 |
-| US19 | As **IT Staff**, I want to update status and add public replies or internal notes so that progress is transparent and technical detail stays internal. | Transparent progress | P0 | US18 |
-| US20 | As **IT Staff or IT Manager**, I want to transfer or escalate a ticket with a reason so that hard or late tickets reach the right people. | Fewer stuck tickets | P1 | US18 |
-| US21 | As **IT Staff**, I want to resolve a ticket with a resolution note so that the employee knows what was done and can confirm. | Closed loop | P0 | US19 |
-| US22 | As **IT Staff**, I want to link a ticket to an asset or related ticket so that I have the full context. | Context | P1 | US19, US28 |
-| US23 | As an **Org Admin**, I want to manage request types (fields, routing, approval flag) and publish them so that requests arrive in a standard shape. | Standard intake | P0 | US01 |
-| US24 | As an **IT Manager**, I want to configure approval rules per request type so that risky requests need sign-off. | Risk control | P1 | US23, US25 |
-| US25 | As an **IT Manager**, I want to approve or reject a request with a reason so that only valid requests are fulfilled. | Governance | P0 | US07, US23 |
-| US26 | As **IT Staff**, I want to follow and record fulfilment steps so that service delivery is consistent. | Consistent delivery | P1 | US25 |
-| US27 | As an **IT Manager**, I want to assess and manage an ISP change so that infrastructure changes are controlled. | Controlled change | P2 | US07, US25 |
-| US28 | As **IT Staff**, I want to register and update IT assets so that stock and condition are known. | Asset data | P0 | US01 |
-| US29 | As **IT Staff**, I want to assign and hand over a device for an approved request so that ownership is recorded. | Ownership history | P0 | US25, US28 |
-| US30 | As **IT Staff**, I want to recover a device from an employee so that stock stays accurate. | Accurate stock | P1 | US29 |
-| US31 | As **IT Staff**, I want to log maintenance and repairs so that asset quality is tracked. | Asset quality | P2 | US28 |
-| US32 | As an **IT Manager**, I want to view inventory and asset history so that I can plan provisioning. | Planning | P1 | US28 |
-| US33 | As **IT Staff**, I want to create and edit KB drafts so that support knowledge is captured. | Reusable knowledge | P0 | US01 |
-| US34 | As an **IT Manager**, I want to review, publish and retire KB articles so that employees and the AI only use approved content. | Trusted content | P0 | US33 |
-| US35 | As an **employee**, I want to search and read KB articles without the AI so that I have a self-service path that does not depend on AI. | Fallback path | P0 | US34 |
-| US36 | As an **IT Manager**, I want to configure SLA targets by type and priority so that support commitments are explicit. | Clear commitments | P1 | US17 |
-| US37 | As an **IT Manager**, I want near-breach and breach alerts so that fewer tickets are missed. | Fewer breaches | P1 | US36 |
-| US38 | As an **IT Manager**, I want to view and export operations reports so that I can measure support performance. | Measurable performance | P1 | US16, US36 |
+| ID | User story | Value | Priority | Dependencies | Acceptance criteria |
+|---|---|---|---|---|---|
+| US01 | As a **user**, I want to sign in and sign out so that only valid members reach my organization's workspace. | Protected access | P0 | Seeded tenant and account | [AC-UC01](06-acceptance-criteria.md#ac-uc01--sign-in-and-sign-out) |
+| US02 | As a **user**, I want to view and edit my profile so that IT can contact and route me correctly. | Accurate contact data | P1 | US01 | [AC-UC02](06-acceptance-criteria.md#ac-uc02--view-and-edit-my-profile) |
+| US03 | As an **Org Admin**, I want to update organization settings (name, timezone, locations, departments) so that routing and SLA use the right context. | Correct tenant setup | P1 | US01 | [AC-UC03](06-acceptance-criteria.md#ac-uc03--update-organization-settings) |
+| US04 | As an **Org Admin**, I want to invite, lock and assign roles to members so that access stays controlled. | Access control | P0 | US01 | [AC-UC04](06-acceptance-criteria.md#ac-uc04--invite-lock-and-assign-member-roles) |
+| US05 | As a **Platform Admin**, I want to activate or suspend a tenant so that I can manage the SaaS lifecycle. | Tenant lifecycle | P2 | — | [AC-UC05](06-acceptance-criteria.md#ac-uc05--activate-or-suspend-a-tenant) |
+| US06 | As an **employee**, I want to browse the IT service catalog so that I can find the right request type. | Right request first time | P0 | US23 | [AC-UC06](06-acceptance-criteria.md#ac-uc06--browse-the-it-service-catalog) |
+| US07 | As an **employee**, I want to submit a request through a form for that service so that IT gets complete data. | Complete tickets | P0 | US06 | [AC-UC07](06-acceptance-criteria.md#ac-uc07--submit-a-request-with-the-right-form) |
+| US08 | As an **employee**, I want to find and track my tickets so that I know the progress and who is handling them. | Transparency | P0 | US07 | [AC-UC08](06-acceptance-criteria.md#ac-uc08--find-and-track-my-tickets) |
+| US09 | As an **employee**, I want to add comments and files to my ticket so that I can give evidence without email. | Fewer back-and-forth | P0 | US08 | [AC-UC09](06-acceptance-criteria.md#ac-uc09--add-comments-and-files-to-my-ticket) |
+| US10 | As an **employee**, I want to confirm resolution or reopen within 7 days so that tickets close only when the problem is really fixed. | Real resolution | P0 | US21 | [AC-UC10](06-acceptance-criteria.md#ac-uc10--confirm-resolution-or-reopen-a-ticket) |
+| US11 | As an **employee**, I want to see the devices assigned to me so that I know what I am responsible for. | Accountability | P1 | US29 | [AC-UC11](06-acceptance-criteria.md#ac-uc11--view-assets-assigned-to-me) |
+| US12 | As an **employee**, I want to ask questions answered from internal articles with sources so that I can trust and verify the answer. | Trusted self-service | P0 | US34 | [AC-UC12](06-acceptance-criteria.md#ac-uc12--ask-a-question-and-get-an-answer-from-company-guides) |
+| US13 | As an **employee**, I want step-by-step troubleshooting so that I can fix common issues myself. | Fewer tickets | P1 | US12 | [AC-UC13](06-acceptance-criteria.md#ac-uc13--get-step-by-step-troubleshooting) |
+| US14 | As an **employee**, I want the assistant to prepare a ticket draft from our conversation so that I do not need to know ticket categories. | Faster intake | P0 | US07, US12 | [AC-UC14](06-acceptance-criteria.md#ac-uc14--turn-a-chat-into-a-ticket-draft) |
+| US15 | As an **employee**, I want to ask about my ticket status in plain language so that I get an answer without searching. | Quick status | P1 | US08 | [AC-UC15](06-acceptance-criteria.md#ac-uc15--ask-in-chat-where-my-ticket-stands) |
+| US16 | As **IT Staff**, I want to view and filter the ticket queue so that I can choose what to work on next. | Prioritized work | P0 | US07 | [AC-UC16](06-acceptance-criteria.md#ac-uc16--view-and-filter-the-ticket-queue) |
+| US17 | As **IT Staff**, I want to set ticket type and priority so that tickets follow the right workflow and SLA. | Correct routing | P0 | US16 | [AC-UC17](06-acceptance-criteria.md#ac-uc17--triage-and-set-ticket-priority) |
+| US18 | As **IT Staff or IT Manager**, I want to assign or pick up a ticket so that each ticket has one owner. | Clear ownership | P0 | US16 | [AC-UC18](06-acceptance-criteria.md#ac-uc18--assign-or-pick-up-a-ticket) |
+| US19 | As **IT Staff**, I want to update status and add public replies or internal notes so that progress is transparent and technical detail stays internal. | Transparent progress | P0 | US18 | [AC-UC19](06-acceptance-criteria.md#ac-uc19--update-status-and-technical-notes) |
+| US20 | As **IT Staff or IT Manager**, I want to transfer or escalate a ticket with a reason so that hard or late tickets reach the right people. | Fewer stuck tickets | P1 | US18 | [AC-UC20](06-acceptance-criteria.md#ac-uc20--transfer-or-escalate-a-ticket) |
+| US21 | As **IT Staff**, I want to resolve a ticket with a resolution note so that the employee knows what was done and can confirm. | Closed loop | P0 | US19 | [AC-UC21](06-acceptance-criteria.md#ac-uc21--resolve-and-close-a-ticket) |
+| US22 | As **IT Staff**, I want to link a ticket to an asset or related ticket so that I have the full context. | Context | P1 | US19, US28 | [AC-UC22](06-acceptance-criteria.md#ac-uc22--link-a-ticket-to-a-device-or-another-ticket) |
+| US23 | As an **Org Admin**, I want to manage request types (fields, routing, approval flag) and publish them so that requests arrive in a standard shape. | Standard intake | P0 | US01 | [AC-UC23](06-acceptance-criteria.md#ac-uc23--manage-request-types-and-forms) |
+| US24 | As an **IT Manager**, I want to configure approval rules per request type so that risky requests need sign-off. | Risk control | P1 | US23, US25 | [AC-UC24](06-acceptance-criteria.md#ac-uc24--configure-approval-rules) |
+| US25 | As an **IT Manager**, I want to approve or reject a request with a reason so that only valid requests are fulfilled. | Governance | P0 | US07, US23 | [AC-UC25](06-acceptance-criteria.md#ac-uc25--approve-or-reject-a-request-with-reason) |
+| US26 | As **IT Staff**, I want to follow and record fulfilment steps so that service delivery is consistent. | Consistent delivery | P1 | US25 | [AC-UC26](06-acceptance-criteria.md#ac-uc26--carry-out-and-record-the-delivery-work) |
+| US27 | As an **IT Manager**, I want to assess and manage an ISP change so that infrastructure changes are controlled. | Controlled change | P2 | US07, US25 | [AC-UC27](06-acceptance-criteria.md#ac-uc27--review-and-plan-an-internet-provider-change-phase-2) |
+| US28 | As **IT Staff**, I want to register and update IT assets so that stock and condition are known. | Asset data | P0 | US01 | [AC-UC28](06-acceptance-criteria.md#ac-uc28--add-and-update-it-devices) |
+| US29 | As **IT Staff**, I want to assign and hand over a device for an approved request so that ownership is recorded. | Ownership history | P0 | US25, US28 | [AC-UC29](06-acceptance-criteria.md#ac-uc29--assign-and-hand-over-a-device) |
+| US30 | As **IT Staff**, I want to recover a device from an employee so that stock stays accurate. | Accurate stock | P1 | US29 | [AC-UC30](06-acceptance-criteria.md#ac-uc30--take-a-device-back-from-an-employee) |
+| US31 | As **IT Staff**, I want to log maintenance and repairs so that asset quality is tracked. | Asset quality | P2 | US28 | [AC-UC31](06-acceptance-criteria.md#ac-uc31--log-repairs-and-maintenance-phase-2) |
+| US32 | As an **IT Manager**, I want to view inventory and asset history so that I can plan provisioning. | Planning | P1 | US28 | [AC-UC32](06-acceptance-criteria.md#ac-uc32--view-device-stock-and-history) |
+| US33 | As **IT Staff**, I want to create and edit KB drafts so that support knowledge is captured. | Reusable knowledge | P0 | US01 | [AC-UC33](06-acceptance-criteria.md#ac-uc33--write-and-edit-guide-drafts) |
+| US34 | As an **IT Manager**, I want to review, publish and retire KB articles so that employees and the AI only use approved content. | Trusted content | P0 | US33 | [AC-UC34](06-acceptance-criteria.md#ac-uc34--review-publish-and-retire-guides) |
+| US35 | As an **employee**, I want to search and read KB articles without the AI so that I have a self-service path that does not depend on AI. | Fallback path | P0 | US34 | [AC-UC35](06-acceptance-criteria.md#ac-uc35--search-and-read-guides-without-the-ai) |
+| US36 | As an **IT Manager**, I want to configure SLA targets by type and priority so that support commitments are explicit. | Clear commitments | P1 | US17 | [AC-UC36](06-acceptance-criteria.md#ac-uc36--set-sla-targets-by-type-and-priority) |
+| US37 | As an **IT Manager**, I want near-breach and breach alerts so that fewer tickets are missed. | Fewer breaches | P1 | US36 | [AC-UC37](06-acceptance-criteria.md#ac-uc37--get-alerts-when-a-deadline-is-at-risk) |
+| US38 | As an **IT Manager**, I want to view and export operations reports so that I can measure support performance. | Measurable performance | P1 | US16, US36 | [AC-UC38](06-acceptance-criteria.md#ac-uc38--view-and-export-operations-reports) |
 
-## Acceptance criteria (summary)
+## Acceptance criteria
 
-Every story has one positive (✓) and one negative (✗) criterion. Detailed Given/When/Then tables follow for the nine highest-risk stories.
-
-| Story | ✓ Positive | ✗ Negative |
-|---|---|---|
-| US01 | Valid credentials open the role's home page in the selected tenant. | Wrong password, locked account or suspended tenant shows one generic error; signed-out session cannot call the API. |
-| US02 | Name, phone, department, location and avatar can be saved. | Role and tenant fields are read-only; API ignores or rejects them. |
-| US03 | Settings change only the current tenant. | Non-admin gets `403`. |
-| US04 | Invited member receives the chosen role; locked member cannot sign in. | User without the role cannot reach the route or API (`403`). |
-| US05 | Suspended tenant can sign in read-only but cannot create data. | Platform Admin cannot open ticket content by default. |
-| US06 | Catalog lists only published types the employee may request. | Draft/hidden types never appear, even by URL. |
-| US07 | Valid submit creates exactly one ticket in `Submitted` or `PendingApproval`. | Missing required field shows inline error and creates nothing. |
-| US08 | Employee sees own tickets with status, assignee and next step. | Another employee's ticket returns `404`. |
-| US09 | Comment and file appear on the timeline with author and time. | File over 10 MB or not on the allow-list is rejected. |
-| US10 | Confirm moves `Resolved → Closed`; reopen within 7 days moves to `Reopened`. | Reopen after 7 days or on a non-resolved ticket is refused (`409`). |
-| US11 | Only devices currently assigned to me are listed with handover date. | Other employees' assignments never appear. |
-| US12 | Answer contains at least one citation that opens a published article. | No relevant source → "no documented answer" + ticket offer; no citation is invented. |
-| US13 | Steps come from the cited article and are safe for an employee to perform. | Assistant never runs or asks for admin actions on the device. |
-| US14 | Draft shows type, title, summary and required fields; confirm creates one ticket. | Without confirmation nothing is stored; repeated confirm does not duplicate. |
-| US15 | Status answer matches the ticket record for the current user. | Asking about another person's ticket returns no data. |
-| US16 | Queue filters by type, status, priority, assignee and SLA within the tenant. | Tickets of other tenants never appear. |
-| US17 | Priority change is saved with actor and old/new value in the audit trail. | AI-suggested priority is never applied without IT action. |
-| US18 | Ticket gets exactly one assignee from the tenant's IT team. | Assigning to a non-IT member or another tenant's user fails. |
-| US19 | Allowed transition is saved; internal note is hidden from the employee. | Invalid transition (e.g. `Closed → InProgress`) returns `409`. |
-| US20 | Transfer/escalation requires a reason and keeps timeline and SLA clock. | Empty reason is rejected. |
-| US21 | `Resolved` requires a resolution note and notifies the requester. | Resolve without a note is rejected. |
-| US22 | Linked asset/ticket is shown on both records. | Link to a record in another tenant fails. |
-| US23 | Published type has required fields, routing team and approval flag; tickets keep the version they were created with. | Type without routing cannot be published. |
-| US24 | New rule applies to new requests from its effective date. | Existing decisions are not changed by a rule update. |
-| US25 | Approve stores approver, time and note; reject requires a reason. | Non-approver gets `403`; a second decision gets `409`. |
-| US26 | Checklist steps are recorded with actor and time. | Fulfilment of a request needing approval is blocked until `Approved`. |
-| US27 | Change cannot be approved without impact, rollback plan and window. | No automated network action is ever triggered. |
-| US28 | Asset tag is unique per tenant; lifecycle status is required. | Duplicate tag is rejected. |
-| US29 | Asset becomes `ASSIGNED`, handover record is linked to the ticket. | Concurrent assignment of the same asset: one succeeds, the other gets `409`. |
-| US30 | Recovery closes the assignment and records a return event. | Recovering an unassigned asset is refused. |
-| US31 | Log stores date, work done, technician, status before/after. | Log on a retired asset is refused. |
-| US32 | Counts per status match the asset table without double counting. | IT Manager cannot edit assets from this view. |
-| US33 | Draft is saved and visible only to IT. | Drafts never appear to employees or in AI retrieval. |
-| US34 | Publish makes the article searchable and indexable for the AI. | Retired article is no longer cited in new answers. |
-| US35 | Keyword and topic search return published, permitted articles. | Restricted article is hidden from unauthorized departments. |
-| US36 | Targets use the business calendar, timezone and pause rules. | Overlapping or negative targets are rejected. |
-| US37 | One alert at 80% and one at 100% of the target per ticket. | Job retries do not send duplicate alerts. |
-| US38 | Export uses exactly the on-screen filters and totals. | Employee and IT Staff cannot open reports (`403`). |
-
-## Detailed acceptance criteria (Given / When / Then)
-
-### US07 — Submit a typed request
-
-| Given | When | Then |
-|---|---|---|
-| Employee chose "Laptop Provisioning" | all required fields are filled and submitted | exactly one service request is created in `PendingApproval`, linked to requester and tenant |
-| Recipient or needed-by date is missing | employee submits | error is shown next to the field; no ticket is created |
-| Employee is not allowed to use this type | API is called directly | `403`, nothing stored |
-
-### US12 — FAQ answer with sources
-
-| Given | When | Then |
-|---|---|---|
-| A published VPN article exists and the employee may read it | employee asks how to connect the VPN | answer lists steps with a link to that article |
-| No trustworthy article exists | employee asks | assistant says it has no documented answer and offers a ticket; nothing is invented |
-| Article belongs to tenant A | employee of tenant B asks | retrieval never returns tenant A content |
-
-### US14 — Ticket draft from conversation
-
-| Given | When | Then |
-|---|---|---|
-| Employee described a VPN error without OS and error message | assistant prepares the request | it asks for the missing fields one by one and does not submit |
-| All required fields are known | assistant creates the draft | employee sees type, category, summary, description and attachments with Edit and Confirm |
-| Employee clicks Confirm twice or retries after a network error | backend creates the ticket | idempotency key prevents a duplicate |
-| Assistant proposed a Change but data is incomplete | employee has not confirmed | no ticket is created |
-
-### US15 — My ticket status
-
-| Given | When | Then |
-|---|---|---|
-| Employee owns ticket INC-1042 | asks "where is my VPN ticket?" | assistant queries by the server-side identity and returns the real status |
-| Employee asks about a colleague's ticket | tool query runs | no data is returned |
-
-### US19 — Status and notes
-
-| Given | When | Then |
-|---|---|---|
-| Ticket is `InProgress` and assigned to the technician | technician sets `Resolved` with a resolution note | timeline event is created and the requester is notified |
-| Ticket is `Closed` | technician tries `InProgress` | API returns `409 invalid transition` |
-
-### US25 — Approval decision
-
-| Given | When | Then |
-|---|---|---|
-| Request is `PendingApproval` | IT Manager approves | request becomes `Approved` with approver, time and note |
-| IT Staff without approval right | calls the approve endpoint | `403`, state unchanged |
-| Request was already rejected | approve is called | `409`, no second decision |
-
-### US29 — Device handover
-
-| Given | When | Then |
-|---|---|---|
-| Asset A is `AVAILABLE` and the request is `Approved` | technician assigns A | asset is `ASSIGNED`, handover record is linked to the ticket |
-| Asset A is being assigned by two technicians at the same time | both submit | one succeeds, the other gets `409 conflict` |
-
-### US34 — KB publishing
-
-| Given | When | Then |
-|---|---|---|
-| Article is a draft | IT Manager publishes | status is `Published` and only now is it indexed for the AI |
-| Article is retired | employee asks the assistant | the article is not cited in new answers |
-
-### US37 — SLA alerts
-
-| Given | When | Then |
-|---|---|---|
-| Ticket reaches 80% of its resolve target | the SLA job runs | exactly one near-breach alert is sent |
-| The job retries after a failure | it runs again | no duplicate alert for the same ticket and threshold |
+Every story links to its `AC-UCxx` block in [06 — Acceptance criteria](06-acceptance-criteria.md). Each block contains positive and negative criteria with expected HTTP outcomes, and Given/When/Then tables for the highest-risk stories (US07, US12, US14, US15, US19, US25, US29, US34, US37).
 
 ## Per-story INVEST review
 
@@ -253,4 +142,4 @@ Releases follow priority, and every dependency points to the same or an earlier 
 - Uploaded files are type- and size-checked before storage.
 - Every state change writes an audit event with actor, time, old and new value.
 
-**Related:** [Use cases](02-use-cases.md) · [Information architecture](04-information-architecture.md)
+**Related:** [Use cases](02-use-cases.md) · [Acceptance criteria](06-acceptance-criteria.md) · [Information architecture](04-information-architecture.md)

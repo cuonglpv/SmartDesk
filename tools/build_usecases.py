@@ -1,11 +1,11 @@
 """Render the UML use case diagrams to docs/images/use-cases/*.png."""
 
-from common import DOCS, esc, render_html, svg_page
+from common import DOCS, esc, render_html, svg_page, wrap
 import model
 
 OUT = DOCS / "images" / "use-cases"
 
-ELL_W, ELL_H, ELL_GAP, EXT_GAP = 420, 60, 18, 46
+ELL_W, ELL_H, ELL_GAP, EXT_GAP = 440, 66, 18, 46
 PKG_PAD_TOP, PKG_PAD, PKG_GAP = 40, 18, 22
 BOUND_X, BOUND_W = 330, 560
 ACTOR_MIN_GAP = 170
@@ -98,12 +98,15 @@ def build(diagram):
     for uc, uy in pos.items():
         name = model.USE_CASES[uc][0]
         ai = uc in model.AI_SUPPORTED
+        name_lines = wrap(name, 16, ELL_W - 90)
+        top = uy - 6 - 9 * (len(name_lines) - 1)
+        label = "".join(f"<text x='{cx}' y='{top + 21 + i * 18}' text-anchor='middle' font-size='16' "
+                        f"fill='{INK}'>{esc(line)}</text>" for i, line in enumerate(name_lines))
         ells.append(
             f"<ellipse cx='{cx}' cy='{uy}' rx='{ELL_W / 2}' ry='{ELL_H / 2}' "
             f"fill='{AI_FILL if ai else ELL_FILL}' stroke='{AI_STROKE if ai else ELL_STROKE}' stroke-width='1.6'/>"
-            f"<text x='{cx}' y='{uy - 6}' text-anchor='middle' font-size='13' font-weight='700' "
-            f"fill='{AI_STROKE if ai else ELL_STROKE}'>{uc}</text>"
-            f"<text x='{cx}' y='{uy + 15}' text-anchor='middle' font-size='16' fill='{INK}'>{esc(name)}</text>")
+            f"<text x='{cx}' y='{top}' text-anchor='middle' font-size='13' font-weight='700' "
+            f"fill='{AI_STROKE if ai else ELL_STROKE}'>{uc}</text>{label}")
 
     for ext, base in diagram["extends"]:
         x = cx + 60

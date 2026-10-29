@@ -75,36 +75,36 @@ SmartDesk
 
 | Screen | Page | Route | Roles | Functional sections | Use cases |
 |---|---|---|---|---|---|
-| `SCR-01` | **Sign In** | `/login` | All | Sign-in form; Account status message; Workspace picker; Help link | UC01 |
-| `SCR-02` | **My Profile** | `/profile` | All | Profile details; Role & permissions; Notification preferences; Session | UC02, UC01 |
-| `SCR-03` | **Notification Center** | `/notifications` | All | Notification list; Filters; Deep link; Mark as read | UC37, UC10, UC25 |
-| `SCR-04` | **Error Pages** | `/403, /404` | All | Error message; Safe way back | — |
-| `SCR-10` | **Employee Home** | `/app` | Employee | Ask SmartDesk bar; Quick actions; My open tickets; Popular guides; Pending my action | UC06, UC08, UC12, UC35 |
-| `SCR-11` | **AI Assistant** | `/app/assistant` | Employee | Conversation; Cited answer; No-source fallback; Guided questions; Ticket draft panel; My ticket status | UC12, UC13, UC14, UC15 |
-| `SCR-12` | **Knowledge Base** | `/app/kb` | Employee | Search; Topic filter; Results list; Featured articles | UC35 |
-| `SCR-13` | **KB Article** | `/app/kb/:id` | Employee | Article header; Step-by-step content; Was this helpful?; Still need help; Related articles | UC35 |
-| `SCR-14` | **Service Catalog** | `/app/catalog` | Employee | Catalog search; Category tabs; Service cards; Not sure? | UC06 |
-| `SCR-15` | **New Request** | `/app/requests/new/:type` | Employee | Service summary; Dynamic form; Attachments; What happens next; Review & submit | UC07, UC14 |
-| `SCR-16` | **My Requests** | `/app/requests` | Employee | Search; Filters; Ticket table; Empty state | UC08 |
-| `SCR-17` | **Request Detail** | `/app/requests/:id` | Employee | Ticket header; Progress tracker; Public conversation; Assignee & approval; Resolution actions | UC08, UC09, UC10 |
-| `SCR-18` | **My Assets** | `/app/assets` | Employee | Assigned devices; Handover record; Report a problem | UC11 |
-| `SCR-20` | **Agent Dashboard** | `/it` | IT Staff, IT Manager | Workload counters; My priority list; Fulfilment tasks; Quick links | UC16 |
-| `SCR-21` | **Ticket Queue** | `/it/tickets` | IT Staff, IT Manager | Queue views; Filters; Ticket table; Inline actions; Empty / loading | UC16, UC17, UC18 |
-| `SCR-22` | **Ticket Detail** | `/it/tickets/:id` | IT Staff, IT Manager | Header & SLA; Request context; Reply & notes; Ticket actions; Resolve; Links; Audit timeline | UC17, UC18, UC19, UC20, UC21, UC22 |
-| `SCR-23` | **Fulfilment Task** | `/it/fulfilment/:id` | IT Staff | Approval status; Checklist; Asset picker; Handover; Complete | UC26, UC29 |
-| `SCR-24` | **Asset Inventory** | `/it/assets` | IT Staff, IT Manager (read) | Stock summary; Search & filters; Asset table; Add asset | UC28, UC32 |
-| `SCR-25` | **Asset Detail** | `/it/assets/:id` | IT Staff, IT Manager (read) | Asset profile; Lifecycle status; Assign / recover; Maintenance log; History | UC28, UC29, UC30, UC31, UC32 |
-| `SCR-26` | **KB Editor** | `/it/kb` | IT Staff | My drafts; Editor; Visibility; Submit for review | UC33 |
-| `SCR-30` | **Approval Inbox** | `/manage/approvals` | IT Manager | Pending list; Filters; Request summary; Decision; Decision history | UC25 |
-| `SCR-31` | **Change Review** | `/manage/changes/:id` | IT Manager | Change summary; Impact & rollback; Approval; Schedule & result | UC27 |
-| `SCR-32` | **KB Review** | `/manage/kb` | IT Manager | Review queue; Diff & preview; Publish / retire | UC34 |
-| `SCR-33` | **SLA & Reports** | `/manage/reports` | IT Manager | Filters; KPI cards; Breach watch; Charts; Export | UC37, UC38 |
-| `SCR-34` | **SLA Policies** | `/manage/sla` | IT Manager | Business calendar; Targets matrix; Alert thresholds; Pause rules | UC36 |
-| `SCR-35` | **Approval Rules** | `/manage/approval-rules` | IT Manager | Rule list; Approver; Conditions; Effective date | UC24 |
-| `SCR-40` | **Organization Settings** | `/admin/org` | Org Admin | Company profile; Locations & departments; Regional settings | UC03 |
-| `SCR-41` | **Members & Roles** | `/admin/members` | Org Admin | Member table; Invite; Role assignment; Lock / unlock | UC04 |
-| `SCR-42` | **Catalog Builder** | `/admin/catalog` | Org Admin | Request types; Form fields; Routing; Preview & publish | UC23 |
-| `SCR-50` | **Tenants** | `/platform/tenants` | Platform Admin | Tenant list; Activate / suspend; Tenant metadata | UC05 |
+| `SCR-01` | **Sign In** | `/login` | All | Sign-in form; Error message; Company picker; Need help? | UC01 |
+| `SCR-02` | **My Profile** | `/profile` | All | Your details; Your role; Notifications; Sign out | UC02, UC01 |
+| `SCR-03` | **Notification Center** | `/notifications` | All | Notification list; Filters; Open the source; Mark as read | UC37, UC10, UC25 |
+| `SCR-04` | **Error Pages** | `/403, /404` | All | Plain explanation; Way back | — |
+| `SCR-10` | **Employee Home** | `/app` | Employee | Ask SmartDesk; Quick actions; My open tickets; Popular guides; Waiting for you | UC06, UC08, UC12, UC35 |
+| `SCR-11` | **AI Assistant** | `/app/assistant` | Employee | Chat; Answer with source; When it doesn't know; Follow-up questions; Ticket draft; My ticket status | UC12, UC13, UC14, UC15 |
+| `SCR-12` | **Knowledge Base** | `/app/kb` | Employee | Search; Topic filter; Results; Featured guides | UC35 |
+| `SCR-13` | **KB Article** | `/app/kb/:id` | Employee | Title; Steps; Was this helpful?; Still need help?; Related guides | UC35 |
+| `SCR-14` | **Service Catalog** | `/app/catalog` | Employee | Search; Categories; Service cards; Not sure? | UC06 |
+| `SCR-15` | **New Request** | `/app/requests/new/:type` | Employee | About this service; Request form; Attachments; What happens next; Submit | UC07, UC14 |
+| `SCR-16` | **My Requests** | `/app/requests` | Employee | Search; Filters; Ticket list; Nothing yet | UC08 |
+| `SCR-17` | **Request Detail** | `/app/requests/:id` | Employee | Summary; Progress; Conversation; Who's on it; Confirm or reopen | UC08, UC09, UC10 |
+| `SCR-18` | **My Assets** | `/app/assets` | Employee | My devices; Handover; Report a problem | UC11 |
+| `SCR-20` | **Agent Dashboard** | `/it` | IT Staff, IT Manager | Workload; My priorities; Ready to deliver; Shortcuts | UC16 |
+| `SCR-21` | **Ticket Queue** | `/it/tickets` | IT Staff, IT Manager | Views; Filters; Ticket list; Quick actions; Empty or loading | UC16, UC17, UC18 |
+| `SCR-22` | **Ticket Detail** | `/it/tickets/:id` | IT Staff, IT Manager | Summary; What was asked; Reply or note; Actions; Resolve; Links; History | UC17, UC18, UC19, UC20, UC21, UC22 |
+| `SCR-23` | **Fulfilment Task** | `/it/fulfilment/:id` | IT Staff | Approval; Checklist; Pick a device; Hand over; Finish | UC26, UC29 |
+| `SCR-24` | **Asset Inventory** | `/it/assets` | IT Staff, IT Manager (read) | Stock; Search & filters; Device list; Add device | UC28, UC32 |
+| `SCR-25` | **Asset Detail** | `/it/assets/:id` | IT Staff, IT Manager (read) | Device details; Status; Hand over / take back; Repair log; History | UC28, UC29, UC30, UC31, UC32 |
+| `SCR-26` | **KB Editor** | `/it/kb` | IT Staff | My guides; Editor; Who can read it; Send for review | UC33 |
+| `SCR-30` | **Approval Inbox** | `/manage/approvals` | IT Manager | Waiting for you; Filters; Request summary; Decision; Past decisions | UC25 |
+| `SCR-31` | **Change Review** | `/manage/changes/:id` | IT Manager | The change; Impact & backup plan; Decision; Schedule & result | UC27 |
+| `SCR-32` | **KB Review** | `/manage/kb` | IT Manager | To review; Compare & preview; Publish or retire | UC34 |
+| `SCR-33` | **SLA & Reports** | `/manage/reports` | IT Manager | Filters; Key numbers; At-risk tickets; Charts; Export | UC37, UC38 |
+| `SCR-34` | **SLA Policies** | `/manage/sla` | IT Manager | Working hours; Targets; Alerts; Pause rules | UC36 |
+| `SCR-35` | **Approval Rules** | `/manage/approval-rules` | IT Manager | Rules; Approver; When it applies; Start date | UC24 |
+| `SCR-40` | **Organization Settings** | `/admin/org` | Org Admin | Company profile; Offices & teams; Regional settings | UC03 |
+| `SCR-41` | **Members & Roles** | `/admin/members` | Org Admin | Members; Invite; Roles; Lock / unlock | UC04 |
+| `SCR-42` | **Catalog Builder** | `/admin/catalog` | Org Admin | Services; Form fields; Routing; Preview & publish | UC23 |
+| `SCR-50` | **Tenants** | `/platform/tenants` | Platform Admin | Companies; Pause / reopen; Company details | UC05 |
 
 The one-line description of every section is on the page cards above; the source of truth for both is [`tools/model.py`](../tools/model.py).
 
@@ -118,37 +118,37 @@ The one-line description of every section is on the page cards above; the source
 | UC04 | Invite, lock and assign member roles | `SCR-41` Members & Roles |
 | UC05 | Activate or suspend a tenant | `SCR-50` Tenants |
 | UC06 | Browse the IT service catalog | `SCR-10` Employee Home, `SCR-14` Service Catalog |
-| UC07 | Submit a request through a typed form | `SCR-15` New Request |
+| UC07 | Submit a request with the right form | `SCR-15` New Request |
 | UC08 | Find and track my tickets | `SCR-10` Employee Home, `SCR-16` My Requests, `SCR-17` Request Detail |
 | UC09 | Add comments and files to my ticket | `SCR-17` Request Detail |
 | UC10 | Confirm resolution or reopen a ticket | `SCR-03` Notification Center, `SCR-17` Request Detail |
 | UC11 | View assets assigned to me | `SCR-18` My Assets |
-| UC12 | Ask FAQs answered from internal sources | `SCR-10` Employee Home, `SCR-11` AI Assistant |
+| UC12 | Ask a question and get an answer from company guides | `SCR-10` Employee Home, `SCR-11` AI Assistant |
 | UC13 | Get step-by-step troubleshooting | `SCR-11` AI Assistant |
-| UC14 | Draft a ticket through conversation | `SCR-11` AI Assistant, `SCR-15` New Request |
-| UC15 | Ask my ticket status in natural language | `SCR-11` AI Assistant |
+| UC14 | Turn a chat into a ticket draft | `SCR-11` AI Assistant, `SCR-15` New Request |
+| UC15 | Ask in chat where my ticket stands | `SCR-11` AI Assistant |
 | UC16 | View and filter the ticket queue | `SCR-20` Agent Dashboard, `SCR-21` Ticket Queue |
 | UC17 | Triage and set ticket priority | `SCR-21` Ticket Queue, `SCR-22` Ticket Detail |
 | UC18 | Assign or pick up a ticket | `SCR-21` Ticket Queue, `SCR-22` Ticket Detail |
 | UC19 | Update status and technical notes | `SCR-22` Ticket Detail |
 | UC20 | Transfer or escalate a ticket | `SCR-22` Ticket Detail |
 | UC21 | Resolve and close a ticket | `SCR-22` Ticket Detail |
-| UC22 | Link a ticket to an asset or ticket | `SCR-22` Ticket Detail |
+| UC22 | Link a ticket to a device or another ticket | `SCR-22` Ticket Detail |
 | UC23 | Manage request types and forms | `SCR-42` Catalog Builder |
 | UC24 | Configure approval rules | `SCR-35` Approval Rules |
 | UC25 | Approve or reject a request with reason | `SCR-03` Notification Center, `SCR-30` Approval Inbox |
-| UC26 | Perform and record fulfilment work | `SCR-23` Fulfilment Task |
-| UC27 | Assess and manage an ISP change | `SCR-31` Change Review |
-| UC28 | Register and update IT assets | `SCR-24` Asset Inventory, `SCR-25` Asset Detail |
+| UC26 | Carry out and record the delivery work | `SCR-23` Fulfilment Task |
+| UC27 | Review and plan an internet provider change | `SCR-31` Change Review |
+| UC28 | Add and update IT devices | `SCR-24` Asset Inventory, `SCR-25` Asset Detail |
 | UC29 | Assign and hand over a device | `SCR-23` Fulfilment Task, `SCR-25` Asset Detail |
-| UC30 | Recover a device from an employee | `SCR-25` Asset Detail |
-| UC31 | Log asset maintenance and repair | `SCR-25` Asset Detail |
-| UC32 | View inventory and asset history | `SCR-24` Asset Inventory, `SCR-25` Asset Detail |
-| UC33 | Create and edit KB article drafts | `SCR-26` KB Editor |
-| UC34 | Review, publish and retire KB articles | `SCR-32` KB Review |
-| UC35 | Search and read KB articles without AI | `SCR-10` Employee Home, `SCR-12` Knowledge Base, `SCR-13` KB Article |
-| UC36 | Configure SLA by type and priority | `SCR-34` SLA Policies |
-| UC37 | Receive near-breach and breach alerts | `SCR-03` Notification Center, `SCR-33` SLA & Reports |
+| UC30 | Take a device back from an employee | `SCR-25` Asset Detail |
+| UC31 | Log repairs and maintenance | `SCR-25` Asset Detail |
+| UC32 | View device stock and history | `SCR-24` Asset Inventory, `SCR-25` Asset Detail |
+| UC33 | Write and edit guide drafts | `SCR-26` KB Editor |
+| UC34 | Review, publish and retire guides | `SCR-32` KB Review |
+| UC35 | Search and read guides without the AI | `SCR-10` Employee Home, `SCR-12` Knowledge Base, `SCR-13` KB Article |
+| UC36 | Set SLA targets by type and priority | `SCR-34` SLA Policies |
+| UC37 | Get alerts when a deadline is at risk | `SCR-03` Notification Center, `SCR-33` SLA & Reports |
 | UC38 | View and export operations reports | `SCR-33` SLA & Reports |
 
 ## Navigation model
