@@ -11,15 +11,14 @@ erDiagram
         uuid id PK
         uuid user_id FK
         uuid department_id FK "nullable"
+        uuid location_id FK "nullable"
         membership_status status
-    }
-    ROLES {
-        uuid id PK
-        varchar code UK
+        uuid invited_by_membership_id FK "nullable"
+        text invite_token_hash UK
     }
     MEMBERSHIP_ROLES {
         uuid membership_id PK, FK
-        uuid role_id PK, FK
+        role_code role PK
     }
     IT_TEAMS {
         uuid id PK
@@ -42,7 +41,6 @@ erDiagram
     APPROVAL_RULES {
         uuid id PK
         uuid catalog_item_id FK
-        uuid approver_role_id FK "nullable"
         uuid approver_membership_id FK "nullable"
         uuid created_by_membership_id FK
     }
@@ -72,7 +70,6 @@ erDiagram
         uuid id PK
         uuid ticket_id FK
         uuid approval_rule_id FK "nullable"
-        uuid approver_role_id FK "nullable"
         uuid approver_membership_id FK "nullable"
         approval_status status
     }
@@ -137,7 +134,6 @@ erDiagram
         uuid id PK
         uuid catalog_item_id FK "nullable"
         ticket_priority priority
-        uuid calendar_id FK
         uuid created_by_membership_id FK
     }
     TICKET_SLA {
@@ -145,10 +141,8 @@ erDiagram
         uuid sla_policy_id FK
     }
     USERS ||--o{ MEMBERSHIPS : "member as"
-    ROLES |o--o{ APPROVAL_RULES : "approver role"
-    ROLES |o--o{ TICKET_APPROVALS : "approver role"
+    MEMBERSHIPS |o--o{ MEMBERSHIPS : "invited by"
     MEMBERSHIPS ||--o{ MEMBERSHIP_ROLES : "has"
-    ROLES ||--o{ MEMBERSHIP_ROLES : "granted as"
     CATALOG_ITEMS ||--o{ CATALOG_VERSIONS : "has"
     IT_TEAMS |o--o{ CATALOG_VERSIONS : "routing team"
     CATALOG_ITEMS ||--o{ APPROVAL_RULES : "has"

@@ -124,6 +124,9 @@ SmartDesk/
 │   ├── 04-information-architecture.md
 │   ├── 05-ui-ux.md
 │   ├── 06-acceptance-criteria.md
+│   ├── api/                           # Proposed OpenAPI 3.1 contract, guide, traceability, review
+│   ├── architecture/c4/               # C4 model: context, container, component, code (two core features)
+│   ├── database/                      # DBML, constraints, ERDs
 │   ├── mindmap/                       # smartdesk.xmind + exported PNGs
 │   └── images/                        # use-cases/, relume/, ui/
 ├── prototype/index.html               # Clickable UX prototype (mock data)

@@ -1,5 +1,5 @@
 ---
-title: SmartDesk — full ERD (every table except tenants carries tenant_id; tenant edges hidden)
+title: SmartDesk — full ERD (every table except tenants and users carries tenant_id; tenant edges hidden)
 ---
 erDiagram
     TENANTS {
@@ -9,8 +9,10 @@ erDiagram
         varchar plan
         tenant_status status
         varchar timezone
+        jsonb working_hours
         timestamptz suspended_at
         text suspended_reason
+        int row_version
         timestamptz created_at
         timestamptz updated_at
     }
@@ -25,33 +27,33 @@ erDiagram
         text password_hash
         varchar full_name
         varchar phone
+        varchar avatar_url
         user_status status
+        boolean is_platform_admin
         timestamptz password_changed_at
         timestamptz last_login_at
         int failed_login_count
         timestamptz locked_until
+        int row_version
         timestamptz created_at
         timestamptz updated_at
-    }
-    USER_TOKENS {
-        uuid id PK
-        uuid user_id FK
-        token_purpose purpose
-        text token_hash UK
-        timestamptz expires_at
-        timestamptz used_at
-        timestamptz created_at
-    }
-    PLATFORM_ADMINS {
-        uuid user_id PK, FK
-        uuid granted_by_user_id FK "nullable"
-        timestamptz granted_at
     }
     DEPARTMENTS {
         uuid id PK
         uuid tenant_id
         varchar name
         boolean is_active
+        int row_version
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    LOCATIONS {
+        uuid id PK
+        uuid tenant_id
+        varchar name
+        text address
+        boolean is_active
+        int row_version
         timestamptz created_at
         timestamptz updated_at
     }
@@ -62,33 +64,21 @@ erDiagram
         uuid department_id FK "nullable"
         membership_status status
         varchar job_title
-        varchar location
+        uuid location_id FK "nullable"
+        jsonb notification_preferences
+        uuid invited_by_membership_id FK "nullable"
+        text invite_token_hash UK
+        timestamptz invite_expires_at
         timestamptz invited_at
         timestamptz joined_at
         timestamptz locked_at
+        int row_version
         timestamptz created_at
         timestamptz updated_at
     }
-    INVITATIONS {
-        uuid id PK
-        uuid tenant_id
-        uuid membership_id FK
-        varchar email
-        text token_hash UK
-        uuid invited_by_membership_id FK
-        timestamptz expires_at
-        timestamptz accepted_at
-        timestamptz revoked_at
-        timestamptz created_at
-    }
-    ROLES {
-        uuid id PK
-        varchar code UK
-        varchar name
-    }
     MEMBERSHIP_ROLES {
         uuid membership_id PK, FK
-        uuid role_id PK, FK
+        role_code role PK
         timestamptz granted_at
     }
     USER_SESSIONS {
@@ -108,6 +98,7 @@ erDiagram
         uuid tenant_id
         varchar name
         boolean is_active
+        int row_version
         timestamptz created_at
     }
     IT_TEAM_MEMBERS {
@@ -122,6 +113,7 @@ erDiagram
         varchar code
         ticket_kind kind
         boolean is_visible
+        int row_version
         timestamptz created_at
         timestamptz updated_at
     }
@@ -148,12 +140,13 @@ erDiagram
         uuid catalog_item_id FK
         varchar name
         int step_no
-        uuid approver_role_id FK "nullable"
+        role_code approver_role
         uuid approver_membership_id FK "nullable"
         jsonb conditions
         timestamptz effective_from
         timestamptz effective_to
         uuid created_by_membership_id FK
+        int row_version
         timestamptz created_at
     }
     TICKETS {
@@ -168,6 +161,7 @@ erDiagram
         text description
         jsonb form_answers
         ticket_priority priority
+        varchar category
         ticket_status status
         uuid assigned_team_id FK "nullable"
         uuid assigned_membership_id FK "nullable"
@@ -238,11 +232,12 @@ erDiagram
         uuid ticket_id FK
         uuid approval_rule_id FK "nullable"
         int step_no
-        uuid approver_role_id FK "nullable"
+        role_code approver_role
         uuid approver_membership_id FK "nullable"
         approval_status status
         text reason
         timestamptz decided_at
+        int row_version
         timestamptz created_at
     }
     FULFILMENT_STEPS {
@@ -264,6 +259,8 @@ erDiagram
         ticket_kind ticket_kind FK
         text impact_assessment
         change_risk_level risk_level
+        int affected_user_count
+        int estimated_downtime_minutes
         text rollback_plan
         timestamptz scheduled_start
         timestamptz scheduled_end
@@ -279,11 +276,12 @@ erDiagram
         varchar manufacturer
         varchar model
         varchar serial_no
-        varchar location
+        uuid location_id FK "nullable"
         date purchase_date
         asset_status status
         text condition_note
         timestamptz retired_at
+        int row_version
         timestamptz created_at
         timestamptz updated_at
     }
@@ -318,6 +316,7 @@ erDiagram
         varchar topic
         kb_visibility visibility
         uuid created_by_membership_id FK
+        int row_version
         timestamptz created_at
         timestamptz updated_at
     }
@@ -374,6 +373,7 @@ erDiagram
         uuid conversation_id FK
         ai_sender sender
         text content
+        ai_reply_kind reply_kind
         varchar model
         int input_tokens
         int output_tokens
@@ -401,19 +401,8 @@ erDiagram
         timestamptz created_at
         timestamptz updated_at
     }
-    BUSINESS_CALENDARS {
-        uuid id PK
-        uuid tenant_id
-        varchar name
-        varchar timezone
-        jsonb working_hours
-        boolean is_default
-        timestamptz created_at
-        timestamptz updated_at
-    }
-    BUSINESS_HOLIDAYS {
-        uuid tenant_id
-        uuid calendar_id PK, FK
+    TENANT_HOLIDAYS {
+        uuid tenant_id PK
         date holiday_date PK
         varchar name
     }
@@ -422,13 +411,13 @@ erDiagram
         uuid tenant_id
         uuid catalog_item_id FK "nullable"
         ticket_priority priority
-        uuid calendar_id FK
         int response_minutes
         int resolution_minutes
         int warning_percent
         timestamptz effective_from
         timestamptz effective_to
         uuid created_by_membership_id FK
+        int row_version
         timestamptz created_at
     }
     TICKET_SLA {
@@ -472,18 +461,38 @@ erDiagram
         jsonb details
         timestamptz created_at
     }
-    USERS ||--o| PLATFORM_ADMINS : "has"
-    USERS |o--o{ PLATFORM_ADMINS : "granted by"
+    IDEMPOTENCY_RECORDS {
+        uuid id PK
+        uuid tenant_id
+        uuid membership_id FK
+        varchar http_method
+        varchar request_path
+        varchar idempotency_key
+        char request_hash
+        smallint response_status
+        jsonb response_body
+        uuid resource_id
+        timestamptz created_at
+        timestamptz expires_at
+    }
+    OUTBOX_MESSAGES {
+        uuid id PK
+        uuid tenant_id "nullable"
+        varchar message_type
+        jsonb payload
+        timestamptz occurred_at
+        timestamptz available_at
+        int attempts
+        timestamptz locked_until
+        timestamptz processed_at
+        text last_error
+    }
     USERS ||--o{ MEMBERSHIPS : "member as"
     USERS ||--o{ USER_SESSIONS : "has"
-    ROLES |o--o{ APPROVAL_RULES : "approver role"
-    ROLES |o--o{ TICKET_APPROVALS : "approver role"
-    USERS ||--o{ USER_TOKENS : "has"
     DEPARTMENTS |o--o{ MEMBERSHIPS : "groups"
-    MEMBERSHIPS ||--o{ INVITATIONS : "has"
-    MEMBERSHIPS ||--o{ INVITATIONS : "invited by"
+    LOCATIONS |o--o{ MEMBERSHIPS : "based at"
+    MEMBERSHIPS |o--o{ MEMBERSHIPS : "invited by"
     MEMBERSHIPS ||--o{ MEMBERSHIP_ROLES : "has"
-    ROLES ||--o{ MEMBERSHIP_ROLES : "granted as"
     MEMBERSHIPS |o--o{ USER_SESSIONS : "tenant session of"
     IT_TEAMS ||--o{ IT_TEAM_MEMBERS : "has member"
     MEMBERSHIPS ||--o{ IT_TEAM_MEMBERS : "member of team"
@@ -516,6 +525,7 @@ erDiagram
     MEMBERSHIPS |o--o{ TICKET_APPROVALS : "approver"
     TICKETS ||--o{ FULFILMENT_STEPS : "has"
     MEMBERSHIPS |o--o{ FULFILMENT_STEPS : "completed by"
+    LOCATIONS |o--o{ ASSETS : "stored at"
     ASSETS ||--o{ ASSET_ASSIGNMENTS : "has"
     MEMBERSHIPS ||--o{ ASSET_ASSIGNMENTS : "holder"
     TICKETS |o--o{ ASSET_ASSIGNMENTS : "authorises"
@@ -540,11 +550,10 @@ erDiagram
     AI_MESSAGES |o--o{ AI_TICKET_DRAFTS : "source message"
     CATALOG_VERSIONS ||--o{ AI_TICKET_DRAFTS : "form for"
     TICKETS |o--o| AI_TICKET_DRAFTS : "submitted ticket"
-    BUSINESS_CALENDARS ||--o{ BUSINESS_HOLIDAYS : "has"
     CATALOG_ITEMS |o--o{ SLA_POLICIES : "has"
-    BUSINESS_CALENDARS ||--o{ SLA_POLICIES : "calendar for"
     MEMBERSHIPS ||--o{ SLA_POLICIES : "created by"
     TICKETS ||--o| TICKET_SLA : "has"
     SLA_POLICIES ||--o{ TICKET_SLA : "applied to"
     MEMBERSHIPS ||--o{ NOTIFICATIONS : "recipient"
     TICKETS ||--o| CHANGE_PLANS : "has"
+    MEMBERSHIPS ||--o{ IDEMPOTENCY_RECORDS : "submitted by"

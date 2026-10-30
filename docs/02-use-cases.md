@@ -373,7 +373,7 @@ Every use case lists actor, preconditions, main flow, alternatives, permission a
 - **Actors:** Employee; External AI Service (secondary)
 - **Preconditions:** issue not solved, or no source found
 - **Main flow:** assistant proposes a request type → asks only missing required fields → shows the draft → employee edits and confirms → backend runs UC07 validation and creates the ticket.
-- **Alternative:** discard → nothing stored; request type needs a full form (e.g. laptop) → open the form pre-filled.
+- **Alternative:** discard → the draft is marked `Discarded` and no ticket is created; request type needs a full form (e.g. laptop) → open the form pre-filled.
 - **Permission:** `ai.draft` + `request.create`
 - **Result:** a complete ticket created only by the employee's confirmation
 
