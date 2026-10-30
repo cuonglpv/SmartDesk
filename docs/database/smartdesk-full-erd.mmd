@@ -1,0 +1,550 @@
+---
+title: SmartDesk — full ERD (every table except tenants carries tenant_id; tenant edges hidden)
+---
+erDiagram
+    TENANTS {
+        uuid id PK
+        varchar slug UK
+        varchar name
+        varchar plan
+        tenant_status status
+        varchar timezone
+        timestamptz suspended_at
+        text suspended_reason
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    TENANT_COUNTERS {
+        uuid tenant_id PK
+        varchar counter_name PK
+        bigint next_value
+    }
+    USERS {
+        uuid id PK
+        varchar email
+        text password_hash
+        varchar full_name
+        varchar phone
+        user_status status
+        timestamptz password_changed_at
+        timestamptz last_login_at
+        int failed_login_count
+        timestamptz locked_until
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    USER_TOKENS {
+        uuid id PK
+        uuid user_id FK
+        token_purpose purpose
+        text token_hash UK
+        timestamptz expires_at
+        timestamptz used_at
+        timestamptz created_at
+    }
+    PLATFORM_ADMINS {
+        uuid user_id PK, FK
+        uuid granted_by_user_id FK "nullable"
+        timestamptz granted_at
+    }
+    DEPARTMENTS {
+        uuid id PK
+        uuid tenant_id
+        varchar name
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    MEMBERSHIPS {
+        uuid id PK
+        uuid tenant_id
+        uuid user_id FK
+        uuid department_id FK "nullable"
+        membership_status status
+        varchar job_title
+        varchar location
+        timestamptz invited_at
+        timestamptz joined_at
+        timestamptz locked_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    INVITATIONS {
+        uuid id PK
+        uuid tenant_id
+        uuid membership_id FK
+        varchar email
+        text token_hash UK
+        uuid invited_by_membership_id FK
+        timestamptz expires_at
+        timestamptz accepted_at
+        timestamptz revoked_at
+        timestamptz created_at
+    }
+    ROLES {
+        uuid id PK
+        varchar code UK
+        varchar name
+    }
+    MEMBERSHIP_ROLES {
+        uuid membership_id PK, FK
+        uuid role_id PK, FK
+        timestamptz granted_at
+    }
+    USER_SESSIONS {
+        uuid id PK
+        uuid user_id FK
+        uuid tenant_id
+        text refresh_token_hash UK
+        varchar user_agent
+        inet ip_address
+        timestamptz expires_at
+        timestamptz last_used_at
+        timestamptz revoked_at
+        timestamptz created_at
+    }
+    IT_TEAMS {
+        uuid id PK
+        uuid tenant_id
+        varchar name
+        boolean is_active
+        timestamptz created_at
+    }
+    IT_TEAM_MEMBERS {
+        uuid tenant_id
+        uuid team_id PK, FK
+        uuid membership_id PK, FK
+        timestamptz joined_at
+    }
+    CATALOG_ITEMS {
+        uuid id PK
+        uuid tenant_id
+        varchar code
+        ticket_kind kind
+        boolean is_visible
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    CATALOG_VERSIONS {
+        uuid id PK
+        uuid tenant_id
+        uuid catalog_item_id FK
+        ticket_kind kind FK
+        int version_no
+        varchar title
+        text description
+        jsonb form_schema
+        uuid routing_team_id FK "nullable"
+        catalog_version_status status
+        uuid created_by_membership_id FK
+        uuid published_by_membership_id FK "nullable"
+        timestamptz published_at
+        timestamptz retired_at
+        timestamptz created_at
+    }
+    APPROVAL_RULES {
+        uuid id PK
+        uuid tenant_id
+        uuid catalog_item_id FK
+        varchar name
+        int step_no
+        uuid approver_role_id FK "nullable"
+        uuid approver_membership_id FK "nullable"
+        jsonb conditions
+        timestamptz effective_from
+        timestamptz effective_to
+        uuid created_by_membership_id FK
+        timestamptz created_at
+    }
+    TICKETS {
+        uuid id PK
+        uuid tenant_id
+        varchar ticket_no
+        ticket_kind kind FK
+        ticket_source source
+        uuid requester_membership_id FK
+        uuid catalog_version_id FK
+        varchar title
+        text description
+        jsonb form_answers
+        ticket_priority priority
+        ticket_status status
+        uuid assigned_team_id FK "nullable"
+        uuid assigned_membership_id FK "nullable"
+        text resolution_note
+        varchar idempotency_key
+        int row_version
+        timestamptz resolved_at
+        timestamptz closed_at
+        timestamptz cancelled_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    TICKET_COMMENTS {
+        uuid id PK
+        uuid tenant_id
+        uuid ticket_id FK
+        uuid author_membership_id FK
+        comment_visibility visibility
+        text body
+        timestamptz created_at
+        timestamptz edited_at
+    }
+    TICKET_ATTACHMENTS {
+        uuid id PK
+        uuid tenant_id
+        uuid ticket_id FK
+        uuid comment_id FK "nullable"
+        uuid uploaded_by_membership_id FK
+        varchar file_name
+        varchar content_type
+        bigint size_bytes
+        char sha256
+        text storage_key UK
+        attachment_scan_status scan_status
+        timestamptz created_at
+    }
+    TICKET_EVENTS {
+        uuid id PK
+        uuid tenant_id
+        uuid ticket_id FK
+        uuid actor_membership_id FK "nullable"
+        ticket_event_type event_type
+        ticket_status old_status
+        ticket_status new_status
+        text reason
+        jsonb details
+        timestamptz created_at
+    }
+    TICKET_LINKS {
+        uuid id PK
+        uuid tenant_id
+        uuid source_ticket_id FK
+        uuid target_ticket_id FK
+        ticket_link_type link_type
+        uuid created_by_membership_id FK
+        timestamptz created_at
+    }
+    TICKET_ASSETS {
+        uuid tenant_id
+        uuid ticket_id PK, FK
+        uuid asset_id PK, FK
+        uuid linked_by_membership_id FK
+        timestamptz created_at
+    }
+    TICKET_APPROVALS {
+        uuid id PK
+        uuid tenant_id
+        uuid ticket_id FK
+        uuid approval_rule_id FK "nullable"
+        int step_no
+        uuid approver_role_id FK "nullable"
+        uuid approver_membership_id FK "nullable"
+        approval_status status
+        text reason
+        timestamptz decided_at
+        timestamptz created_at
+    }
+    FULFILMENT_STEPS {
+        uuid id PK
+        uuid tenant_id
+        uuid ticket_id FK
+        ticket_kind ticket_kind FK
+        int step_no
+        text description
+        fulfilment_step_status status
+        text note
+        uuid completed_by_membership_id FK "nullable"
+        timestamptz completed_at
+        timestamptz created_at
+    }
+    CHANGE_PLANS {
+        uuid tenant_id
+        uuid ticket_id PK, FK
+        ticket_kind ticket_kind FK
+        text impact_assessment
+        change_risk_level risk_level
+        text rollback_plan
+        timestamptz scheduled_start
+        timestamptz scheduled_end
+        text implementation_result
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    ASSETS {
+        uuid id PK
+        uuid tenant_id
+        varchar asset_tag
+        varchar asset_type
+        varchar manufacturer
+        varchar model
+        varchar serial_no
+        varchar location
+        date purchase_date
+        asset_status status
+        text condition_note
+        timestamptz retired_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    ASSET_ASSIGNMENTS {
+        uuid id PK
+        uuid tenant_id
+        uuid asset_id FK
+        uuid holder_membership_id FK
+        uuid ticket_id FK "nullable"
+        uuid handed_over_by_membership_id FK
+        timestamptz handed_over_at
+        text condition_at_handover
+        timestamptz returned_at
+        uuid returned_by_membership_id FK "nullable"
+        text condition_at_return
+    }
+    ASSET_MAINTENANCE {
+        uuid id PK
+        uuid tenant_id
+        uuid asset_id FK
+        uuid ticket_id FK "nullable"
+        uuid technician_membership_id FK
+        text description
+        timestamptz serviced_at
+        asset_status status_after
+        timestamptz created_at
+    }
+    KB_ARTICLES {
+        uuid id PK
+        uuid tenant_id
+        varchar slug
+        varchar topic
+        kb_visibility visibility
+        uuid created_by_membership_id FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    KB_ARTICLE_VERSIONS {
+        uuid id PK
+        uuid tenant_id
+        uuid article_id FK
+        int version_no
+        varchar title
+        text content
+        kb_version_status status
+        uuid created_by_membership_id FK
+        timestamptz submitted_at
+        uuid reviewed_by_membership_id FK "nullable"
+        timestamptz reviewed_at
+        text review_comment
+        uuid published_by_membership_id FK "nullable"
+        timestamptz published_at
+        timestamptz retired_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    KB_CHUNKS {
+        uuid id PK
+        uuid tenant_id
+        uuid article_version_id FK
+        int chunk_no
+        text content
+        vector embedding
+        int token_count
+        timestamptz created_at
+    }
+    KB_FEEDBACK {
+        uuid id PK
+        uuid tenant_id
+        uuid article_version_id FK
+        uuid membership_id FK
+        boolean is_helpful
+        text comment
+        timestamptz submitted_at
+    }
+    AI_CONVERSATIONS {
+        uuid id PK
+        uuid tenant_id
+        uuid membership_id FK
+        varchar title
+        timestamptz started_at
+        timestamptz last_message_at
+        timestamptz ended_at
+    }
+    AI_MESSAGES {
+        uuid id PK
+        uuid tenant_id
+        uuid conversation_id FK
+        ai_sender sender
+        text content
+        varchar model
+        int input_tokens
+        int output_tokens
+        timestamptz created_at
+    }
+    AI_MESSAGE_SOURCES {
+        uuid id PK
+        uuid tenant_id
+        uuid ai_message_id FK
+        uuid kb_article_version_id FK
+        text excerpt
+    }
+    AI_TICKET_DRAFTS {
+        uuid id PK
+        uuid tenant_id
+        uuid conversation_id FK
+        uuid created_by_membership_id FK
+        uuid source_message_id FK "nullable"
+        uuid catalog_version_id FK
+        varchar title
+        text description
+        jsonb proposed_answers
+        ai_draft_status status
+        uuid submitted_ticket_id FK, UK "nullable"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    BUSINESS_CALENDARS {
+        uuid id PK
+        uuid tenant_id
+        varchar name
+        varchar timezone
+        jsonb working_hours
+        boolean is_default
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    BUSINESS_HOLIDAYS {
+        uuid tenant_id
+        uuid calendar_id PK, FK
+        date holiday_date PK
+        varchar name
+    }
+    SLA_POLICIES {
+        uuid id PK
+        uuid tenant_id
+        uuid catalog_item_id FK "nullable"
+        ticket_priority priority
+        uuid calendar_id FK
+        int response_minutes
+        int resolution_minutes
+        int warning_percent
+        timestamptz effective_from
+        timestamptz effective_to
+        uuid created_by_membership_id FK
+        timestamptz created_at
+    }
+    TICKET_SLA {
+        uuid tenant_id
+        uuid ticket_id PK, FK
+        uuid sla_policy_id FK
+        timestamptz response_due_at
+        timestamptz resolution_due_at
+        timestamptz first_responded_at
+        timestamptz paused_at
+        bigint paused_seconds
+        timestamptz response_warning_sent_at
+        timestamptz resolution_warning_sent_at
+        timestamptz response_breached_at
+        timestamptz resolution_breached_at
+        timestamptz updated_at
+    }
+    NOTIFICATIONS {
+        uuid id PK
+        uuid tenant_id
+        uuid recipient_membership_id FK
+        varchar notification_type
+        varchar title
+        text body
+        varchar target_type
+        uuid target_id
+        varchar dedupe_key
+        timestamptz read_at
+        timestamptz created_at
+    }
+    AUDIT_LOGS {
+        uuid id PK
+        audit_scope scope
+        uuid tenant_id
+        uuid actor_user_id
+        uuid actor_membership_id
+        varchar action
+        varchar entity_type
+        uuid entity_id
+        inet ip_address
+        jsonb details
+        timestamptz created_at
+    }
+    USERS ||--o| PLATFORM_ADMINS : "has"
+    USERS |o--o{ PLATFORM_ADMINS : "granted by"
+    USERS ||--o{ MEMBERSHIPS : "member as"
+    USERS ||--o{ USER_SESSIONS : "has"
+    ROLES |o--o{ APPROVAL_RULES : "approver role"
+    ROLES |o--o{ TICKET_APPROVALS : "approver role"
+    USERS ||--o{ USER_TOKENS : "has"
+    DEPARTMENTS |o--o{ MEMBERSHIPS : "groups"
+    MEMBERSHIPS ||--o{ INVITATIONS : "has"
+    MEMBERSHIPS ||--o{ INVITATIONS : "invited by"
+    MEMBERSHIPS ||--o{ MEMBERSHIP_ROLES : "has"
+    ROLES ||--o{ MEMBERSHIP_ROLES : "granted as"
+    MEMBERSHIPS |o--o{ USER_SESSIONS : "tenant session of"
+    IT_TEAMS ||--o{ IT_TEAM_MEMBERS : "has member"
+    MEMBERSHIPS ||--o{ IT_TEAM_MEMBERS : "member of team"
+    CATALOG_ITEMS ||--o{ CATALOG_VERSIONS : "has"
+    IT_TEAMS |o--o{ CATALOG_VERSIONS : "routing team"
+    MEMBERSHIPS ||--o{ CATALOG_VERSIONS : "created by"
+    MEMBERSHIPS |o--o{ CATALOG_VERSIONS : "published by"
+    CATALOG_ITEMS ||--o{ APPROVAL_RULES : "has"
+    MEMBERSHIPS |o--o{ APPROVAL_RULES : "approver"
+    MEMBERSHIPS ||--o{ APPROVAL_RULES : "created by"
+    CATALOG_VERSIONS ||--o{ TICKETS : "form for"
+    MEMBERSHIPS ||--o{ TICKETS : "requester"
+    IT_TEAMS |o--o{ TICKETS : "assigned team"
+    MEMBERSHIPS |o--o{ TICKETS : "assigned"
+    TICKETS ||--o{ TICKET_COMMENTS : "has"
+    MEMBERSHIPS ||--o{ TICKET_COMMENTS : "author"
+    TICKETS ||--o{ TICKET_ATTACHMENTS : "has"
+    TICKET_COMMENTS |o--o{ TICKET_ATTACHMENTS : "attaches"
+    MEMBERSHIPS ||--o{ TICKET_ATTACHMENTS : "uploaded by"
+    TICKETS ||--o{ TICKET_EVENTS : "has"
+    MEMBERSHIPS |o--o{ TICKET_EVENTS : "actor"
+    TICKETS ||--o{ TICKET_LINKS : "source ticket"
+    TICKETS ||--o{ TICKET_LINKS : "target ticket"
+    MEMBERSHIPS ||--o{ TICKET_LINKS : "created by"
+    TICKETS ||--o{ TICKET_ASSETS : "has"
+    ASSETS ||--o{ TICKET_ASSETS : "concerned by"
+    MEMBERSHIPS ||--o{ TICKET_ASSETS : "linked by"
+    TICKETS ||--o{ TICKET_APPROVALS : "has"
+    APPROVAL_RULES |o--o{ TICKET_APPROVALS : "applied as"
+    MEMBERSHIPS |o--o{ TICKET_APPROVALS : "approver"
+    TICKETS ||--o{ FULFILMENT_STEPS : "has"
+    MEMBERSHIPS |o--o{ FULFILMENT_STEPS : "completed by"
+    ASSETS ||--o{ ASSET_ASSIGNMENTS : "has"
+    MEMBERSHIPS ||--o{ ASSET_ASSIGNMENTS : "holder"
+    TICKETS |o--o{ ASSET_ASSIGNMENTS : "authorises"
+    MEMBERSHIPS ||--o{ ASSET_ASSIGNMENTS : "handed over by"
+    MEMBERSHIPS |o--o{ ASSET_ASSIGNMENTS : "returned by"
+    ASSETS ||--o{ ASSET_MAINTENANCE : "has"
+    TICKETS |o--o{ ASSET_MAINTENANCE : "triggers"
+    MEMBERSHIPS ||--o{ ASSET_MAINTENANCE : "technician"
+    MEMBERSHIPS ||--o{ KB_ARTICLES : "created by"
+    KB_ARTICLES ||--o{ KB_ARTICLE_VERSIONS : "has"
+    MEMBERSHIPS ||--o{ KB_ARTICLE_VERSIONS : "created by"
+    MEMBERSHIPS |o--o{ KB_ARTICLE_VERSIONS : "reviewed by"
+    MEMBERSHIPS |o--o{ KB_ARTICLE_VERSIONS : "published by"
+    KB_ARTICLE_VERSIONS ||--o{ KB_CHUNKS : "has"
+    KB_ARTICLE_VERSIONS ||--o{ KB_FEEDBACK : "has"
+    MEMBERSHIPS ||--o{ KB_FEEDBACK : "rates"
+    MEMBERSHIPS ||--o{ AI_CONVERSATIONS : "owns"
+    AI_CONVERSATIONS ||--o{ AI_MESSAGES : "has"
+    AI_MESSAGES ||--o{ AI_MESSAGE_SOURCES : "has"
+    KB_ARTICLE_VERSIONS ||--o{ AI_MESSAGE_SOURCES : "cited by"
+    AI_CONVERSATIONS ||--o{ AI_TICKET_DRAFTS : "proposes"
+    AI_MESSAGES |o--o{ AI_TICKET_DRAFTS : "source message"
+    CATALOG_VERSIONS ||--o{ AI_TICKET_DRAFTS : "form for"
+    TICKETS |o--o| AI_TICKET_DRAFTS : "submitted ticket"
+    BUSINESS_CALENDARS ||--o{ BUSINESS_HOLIDAYS : "has"
+    CATALOG_ITEMS |o--o{ SLA_POLICIES : "has"
+    BUSINESS_CALENDARS ||--o{ SLA_POLICIES : "calendar for"
+    MEMBERSHIPS ||--o{ SLA_POLICIES : "created by"
+    TICKETS ||--o| TICKET_SLA : "has"
+    SLA_POLICIES ||--o{ TICKET_SLA : "applied to"
+    MEMBERSHIPS ||--o{ NOTIFICATIONS : "recipient"
+    TICKETS ||--o| CHANGE_PLANS : "has"

@@ -1,0 +1,181 @@
+---
+title: SmartDesk — core ERD (keys and state columns only; tenant_id omitted)
+---
+erDiagram
+    USERS {
+        uuid id PK
+        varchar email
+        user_status status
+    }
+    MEMBERSHIPS {
+        uuid id PK
+        uuid user_id FK
+        uuid department_id FK "nullable"
+        membership_status status
+    }
+    ROLES {
+        uuid id PK
+        varchar code UK
+    }
+    MEMBERSHIP_ROLES {
+        uuid membership_id PK, FK
+        uuid role_id PK, FK
+    }
+    IT_TEAMS {
+        uuid id PK
+    }
+    CATALOG_ITEMS {
+        uuid id PK
+        varchar code
+        ticket_kind kind
+    }
+    CATALOG_VERSIONS {
+        uuid id PK
+        uuid catalog_item_id FK
+        ticket_kind kind FK
+        int version_no
+        uuid routing_team_id FK "nullable"
+        catalog_version_status status
+        uuid created_by_membership_id FK
+        uuid published_by_membership_id FK "nullable"
+    }
+    APPROVAL_RULES {
+        uuid id PK
+        uuid catalog_item_id FK
+        uuid approver_role_id FK "nullable"
+        uuid approver_membership_id FK "nullable"
+        uuid created_by_membership_id FK
+    }
+    TICKETS {
+        uuid id PK
+        varchar ticket_no
+        ticket_kind kind FK
+        uuid requester_membership_id FK
+        uuid catalog_version_id FK
+        ticket_priority priority
+        ticket_status status
+        uuid assigned_team_id FK "nullable"
+        uuid assigned_membership_id FK "nullable"
+    }
+    TICKET_COMMENTS {
+        uuid id PK
+        uuid ticket_id FK
+        uuid author_membership_id FK
+        comment_visibility visibility
+    }
+    TICKET_EVENTS {
+        uuid id PK
+        uuid ticket_id FK
+        uuid actor_membership_id FK "nullable"
+    }
+    TICKET_APPROVALS {
+        uuid id PK
+        uuid ticket_id FK
+        uuid approval_rule_id FK "nullable"
+        uuid approver_role_id FK "nullable"
+        uuid approver_membership_id FK "nullable"
+        approval_status status
+    }
+    TICKET_ASSETS {
+        uuid ticket_id PK, FK
+        uuid asset_id PK, FK
+        uuid linked_by_membership_id FK
+    }
+    FULFILMENT_STEPS {
+        uuid id PK
+        uuid ticket_id FK
+        ticket_kind ticket_kind FK
+        fulfilment_step_status status
+        uuid completed_by_membership_id FK "nullable"
+    }
+    ASSETS {
+        uuid id PK
+        varchar asset_tag
+        asset_status status
+    }
+    ASSET_ASSIGNMENTS {
+        uuid id PK
+        uuid asset_id FK
+        uuid holder_membership_id FK
+        uuid ticket_id FK "nullable"
+        uuid handed_over_by_membership_id FK
+        uuid returned_by_membership_id FK "nullable"
+    }
+    KB_ARTICLES {
+        uuid id PK
+        varchar slug
+        kb_visibility visibility
+        uuid created_by_membership_id FK
+    }
+    KB_ARTICLE_VERSIONS {
+        uuid id PK
+        uuid article_id FK
+        int version_no
+        kb_version_status status
+        uuid created_by_membership_id FK
+        uuid reviewed_by_membership_id FK "nullable"
+        uuid published_by_membership_id FK "nullable"
+    }
+    AI_CONVERSATIONS {
+        uuid id PK
+        uuid membership_id FK
+    }
+    AI_MESSAGES {
+        uuid id PK
+        uuid conversation_id FK
+    }
+    AI_TICKET_DRAFTS {
+        uuid id PK
+        uuid conversation_id FK
+        uuid created_by_membership_id FK
+        uuid source_message_id FK "nullable"
+        uuid catalog_version_id FK
+        ai_draft_status status
+        uuid submitted_ticket_id FK, UK "nullable"
+    }
+    SLA_POLICIES {
+        uuid id PK
+        uuid catalog_item_id FK "nullable"
+        ticket_priority priority
+        uuid calendar_id FK
+        uuid created_by_membership_id FK
+    }
+    TICKET_SLA {
+        uuid ticket_id PK, FK
+        uuid sla_policy_id FK
+    }
+    USERS ||--o{ MEMBERSHIPS : "member as"
+    ROLES |o--o{ APPROVAL_RULES : "approver role"
+    ROLES |o--o{ TICKET_APPROVALS : "approver role"
+    MEMBERSHIPS ||--o{ MEMBERSHIP_ROLES : "has"
+    ROLES ||--o{ MEMBERSHIP_ROLES : "granted as"
+    CATALOG_ITEMS ||--o{ CATALOG_VERSIONS : "has"
+    IT_TEAMS |o--o{ CATALOG_VERSIONS : "routing team"
+    CATALOG_ITEMS ||--o{ APPROVAL_RULES : "has"
+    MEMBERSHIPS |o--o{ APPROVAL_RULES : "approver"
+    CATALOG_VERSIONS ||--o{ TICKETS : "form for"
+    MEMBERSHIPS ||--o{ TICKETS : "requester"
+    IT_TEAMS |o--o{ TICKETS : "assigned team"
+    MEMBERSHIPS |o--o{ TICKETS : "assigned"
+    TICKETS ||--o{ TICKET_COMMENTS : "has"
+    MEMBERSHIPS ||--o{ TICKET_COMMENTS : "author"
+    TICKETS ||--o{ TICKET_EVENTS : "has"
+    TICKETS ||--o{ TICKET_ASSETS : "has"
+    ASSETS ||--o{ TICKET_ASSETS : "concerned by"
+    TICKETS ||--o{ TICKET_APPROVALS : "has"
+    APPROVAL_RULES |o--o{ TICKET_APPROVALS : "applied as"
+    MEMBERSHIPS |o--o{ TICKET_APPROVALS : "approver"
+    TICKETS ||--o{ FULFILMENT_STEPS : "has"
+    ASSETS ||--o{ ASSET_ASSIGNMENTS : "has"
+    MEMBERSHIPS ||--o{ ASSET_ASSIGNMENTS : "holder"
+    TICKETS |o--o{ ASSET_ASSIGNMENTS : "authorises"
+    KB_ARTICLES ||--o{ KB_ARTICLE_VERSIONS : "has"
+    MEMBERSHIPS ||--o{ AI_CONVERSATIONS : "owns"
+    AI_CONVERSATIONS ||--o{ AI_MESSAGES : "has"
+    AI_CONVERSATIONS ||--o{ AI_TICKET_DRAFTS : "proposes"
+    AI_MESSAGES |o--o{ AI_TICKET_DRAFTS : "source message"
+    CATALOG_VERSIONS ||--o{ AI_TICKET_DRAFTS : "form for"
+    TICKETS |o--o| AI_TICKET_DRAFTS : "submitted ticket"
+    CATALOG_ITEMS |o--o{ SLA_POLICIES : "has"
+    TICKETS ||--o| TICKET_SLA : "has"
+    SLA_POLICIES ||--o{ TICKET_SLA : "applied to"
