@@ -1,6 +1,6 @@
 # SmartDesk
 
-SmartDesk is a multi-tenant SaaS that gives small and mid-sized companies one place to request IT help, track IT assets and share internal how-to guides. An AI assistant answers questions from the company's own published articles, shows its sources and turns a conversation into a ticket draft, only the employee can submit it, and only people can triage, approve or hand over devices.
+SmartDesk is a multi-tenant SaaS that gives companies one place to request IT help, track IT assets and share internal how-to guides. An AI assistant answers questions from the company's own published articles, shows its sources and turns a conversation into a ticket draft, only the employee can submit it, and only people can triage, approve or hand over devices.
 
 ## 1. Problem Analysis
 
