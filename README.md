@@ -23,7 +23,7 @@ Editable XMind source: [`docs/mindmap/smartdesk.xmind`](docs/mindmap/smartdesk.x
 | Problem | 	IT requests are scattered across chat and email; employees struggle to identify appropriate request types; recurring incidents lack centralized guidance; device handovers lack clear approval and audit trails; SLA visibility is limited. |
 | Users | Five primary user roles: Employee, IT Staff, IT Manager, Org Admin, and Platform Admin. External AI Service acts as a secondary actor.|
 | Services & Modules | IT request types include Incident (VPN, Wi-Fi, printer,...), Service Request (VPN access, laptop,...), and Change (office ISP change, Phase 2,..). Supporting modules include IT Asset Management and Knowledge Base. |
-| Market evidence | Jira Service Management and Freshservice Freddy AI demonstrate established ITSM and AI self-service capabilities. Customer demand and willingness to pay for SmartDesk are still in investigation. |
+| Market evidence | Jira Service Management and Freshservice Freddy AI demonstrate established ITSM and AI self-service capabilities. Willingness to pay for SmartDesk is still in investigation. |
 | Scope | Release 1 (MVP): 22 P0 user stories covering core IT support, ticket management, asset handover, knowledge base, and AI assistance. Release 2: 18 P1 stories. Phase 2: 3 P2 stories. |
 
 Full analysis: [Top-down research](docs/01-top-down-research.md).
