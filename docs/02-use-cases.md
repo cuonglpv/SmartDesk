@@ -1,6 +1,6 @@
 # 02 — Actors, Roles and Use Cases
 
-> Design status: TARGET V1 (38 use cases: 21 P0, 14 P1, 3 P2)
+> Design status: TARGET V1 (43 use cases: 22 P0, 18 P1, 3 P2)
 >
 > Implementation status: UX prototype only — no backend yet
 
@@ -8,19 +8,19 @@
 
 | Role | Code | Scope | Notes |
 |---|---|---|---|
-| User | — | Abstract actor: anyone who signs in | Generalizes all roles below for UC01, UC02 |
+| User | — | Abstract actor: anyone who signs in | Generalizes all roles below for UC01, UC02, UC39, UC40 |
 | Employee | `EMPLOYEE` | Self-service, AI assistant, own tickets, own devices | IT Staff and IT Manager can also act as Employees for their own requests |
 | IT Staff | `IT_STAFF` | Queue, triage, ticket updates, fulfilment, assets, KB drafts | Cannot approve |
-| IT Manager | `IT_MANAGER` | Approvals, SLA, reports, escalation, KB publishing, inventory view | Same tenant only |
+| IT Manager | `IT_MANAGER` | Approvals, SLA, reports, escalation, KB publishing, inventory view | Same tenant only; the default **Approver** (an approval rule may name another person or role, UC24) |
 | Org Admin | `ORG_ADMIN` | Organization settings, members and roles, service catalog | Tenant configuration only |
-| Platform Admin | `PLATFORM_ADMIN` | Tenant lifecycle | No ticket content by default |
-| AI Provider | — | Secondary actor (external LLM) supporting UC12–UC15 | Called by the backend with the user's permissions; never writes data |
+| Platform Admin | `PLATFORM_ADMIN` | Organization list, workspace creation and lifecycle, platform admin log | No ticket content by default |
+| External AI Service | — | Secondary actor (external LLM) supporting UC12–UC15 | Called by the backend with the user's permissions; never writes data |
 
 ## Role × feature matrix
 
 | Capability | Employee | IT Staff | IT Manager | Org Admin | Platform Admin |
 |---|---|---|---|---|---|
-| Sign in, profile, notifications | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Sign in, profile, password, notifications | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Catalog, submit request, my tickets | ✓ | ✓ | ✓ | ✓ | |
 | AI assistant | ✓ | ✓ | ✓ | ✓ | |
 | KB search and read | ✓ | ✓ | ✓ | ✓ | |
@@ -33,20 +33,21 @@
 | KB publish / retire | | | ✓ | | |
 | Approve / reject requests | | | ✓ | | |
 | Approval rules, SLA policies, reports | | | ✓ | | |
-| Organization settings, members, catalog builder | | | | ✓ | |
-| Tenant activate / suspend | | | | | ✓ |
+| Organization settings and departments, members, catalog builder | | | | ✓ | |
+| Organization list, create / activate workspace, admin log | | | | | ✓ |
+| Suspend / reopen workspace (Phase 2) | | | | | ✓ |
 
 Menus and buttons are **not rendered** when the user lacks permission; the API enforces the same rules and returns `403` (or `404` for records of another tenant, so their existence is not leaked).
 
 ## Use case diagrams
 
-The model is split into three views so each stays readable; together they cover all 38 use cases and all actors.
+The model is split into three views so each stays readable; together they cover all 43 use cases and all actors.
 
 ### View 1 — Employee & AI Assistant
 
 ![Use cases: Employee and AI Assistant](images/use-cases/uc-1-employee.png)
 
-`Employee` specializes the abstract `User`. UC13 extends UC12 when the answer needs troubleshooting steps; UC14 extends UC13 when the steps do not fix the issue. The AI provider is a secondary actor on UC12–UC15 only.
+`Employee` specializes the abstract `User`. UC13 extends UC12 when the answer needs troubleshooting steps; UC14 extends UC13 when the steps do not fix the issue. The External AI Service is a secondary actor on UC12–UC15 only.
 
 ### View 2 — IT Staff
 
@@ -62,19 +63,19 @@ The model is split into three views so each stays readable; together they cover 
 |---|---|---|---|---|
 | UC01 | Identity & Tenant | Sign in and sign out | User | P0 |
 | UC02 | Identity & Tenant | View and edit my profile | User | P1 |
-| UC03 | Identity & Tenant | Update organization settings | Org Admin | P1 |
+| UC03 | Identity & Tenant | Update organization settings and departments | Org Admin | P1 |
 | UC04 | Identity & Tenant | Invite, lock and assign member roles | Org Admin | P0 |
-| UC05 | Identity & Tenant | Activate or suspend a tenant | Platform Admin | P2 |
+| UC05 | Identity & Tenant | Create and activate a tenant workspace | Platform Admin | P1 |
 | UC06 | Employee Self-service | Browse the IT service catalog | Employee | P0 |
 | UC07 | Employee Self-service | Submit a request with the right form | Employee | P0 |
 | UC08 | Employee Self-service | Find and track my tickets | Employee | P0 |
 | UC09 | Employee Self-service | Add comments and files to my ticket | Employee | P0 |
 | UC10 | Employee Self-service | Confirm resolution or reopen a ticket | Employee | P0 |
 | UC11 | Employee Self-service | View assets assigned to me | Employee | P1 |
-| UC12 | AI Assistant | Ask a question and get an answer from company guides | Employee (+ AI Provider) | P0 |
-| UC13 | AI Assistant | Get step-by-step troubleshooting | Employee (+ AI Provider) | P1 |
-| UC14 | AI Assistant | Turn a chat into a ticket draft | Employee (+ AI Provider) | P0 |
-| UC15 | AI Assistant | Ask in chat where my ticket stands | Employee (+ AI Provider) | P1 |
+| UC12 | AI Assistant | Ask a question and get an answer from company guides | Employee (+ External AI Service) | P0 |
+| UC13 | AI Assistant | Get step-by-step troubleshooting | Employee (+ External AI Service) | P1 |
+| UC14 | AI Assistant | Turn a chat into a ticket draft | Employee (+ External AI Service) | P0 |
+| UC15 | AI Assistant | Ask in chat where my ticket stands | Employee (+ External AI Service) | P1 |
 | UC16 | Ticket Management | View and filter the ticket queue | IT Staff | P0 |
 | UC17 | Ticket Management | Triage and set ticket priority | IT Staff | P0 |
 | UC18 | Ticket Management | Assign or pick up a ticket | IT Staff, IT Manager | P0 |
@@ -98,6 +99,11 @@ The model is split into three views so each stays readable; together they cover 
 | UC36 | SLA & Reporting | Set SLA targets by type and priority | IT Manager | P1 |
 | UC37 | SLA & Reporting | Get alerts when a deadline is at risk | IT Manager | P1 |
 | UC38 | SLA & Reporting | View and export operations reports | IT Manager | P1 |
+| UC39 | Identity & Tenant | Change my password | User | P0 |
+| UC40 | Identity & Tenant | View my notifications | User | P1 |
+| UC41 | Identity & Tenant | Suspend or reopen a tenant workspace | Platform Admin | P2 |
+| UC42 | Identity & Tenant | View the organization list | Platform Admin | P1 |
+| UC43 | Identity & Tenant | View the platform admin log | Platform Admin | P1 |
 
 ## Shared rules applied to every use case
 
@@ -177,7 +183,7 @@ Each use case is guarded by one permission key. The API checks the key, then the
 
 | Permission | Employee | IT Staff | IT Manager | Org Admin | Platform Admin |
 |---|---|---|---|---|---|
-| `profile.self`, `notification.read` | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `profile.self`, `password.change`, `notification.read` | ✓ | ✓ | ✓ | ✓ | ✓ |
 | `catalog.read`, `request.create`, `kb.read` | ✓ | ✓ | ✓ | ✓ | |
 | `ticket.readOwn`, `ticket.commentOwn`, `ticket.confirmOwn`, `asset.readOwn` *(own)* | ✓ | ✓ | ✓ | ✓ | |
 | `ai.ask`, `ai.draft`, `ai.myTickets` *(own)* | ✓ | ✓ | ✓ | ✓ | |
@@ -188,7 +194,7 @@ Each use case is guarded by one permission key. The API checks the key, then the
 | `kb.draft` | | ✓ | ✓ | | |
 | `kb.publish`, `approval.decide`, `approval.rules`, `change.manage`, `sla.manage`, `sla.alerts`, `report.read` | | | ✓ | | |
 | `org.settings`, `members.manage`, `catalog.manage` | | | | ✓ | |
-| `tenant.lifecycle` | | | | | ✓ |
+| `tenant.read`, `tenant.create`, `tenant.lifecycle`, `platform.audit` | | | | | ✓ |
 
 ## Use case specifications
 
@@ -214,12 +220,12 @@ Every use case lists actor, preconditions, main flow, alternatives, permission a
 - **Permission:** `profile.self`
 - **Result:** updated contact data used for routing and notifications
 
-#### UC03 Update organization settings
+#### UC03 Update organization settings and departments
 
 - **Actor:** Org Admin
 - **Preconditions:** signed in as Org Admin
-- **Main flow:** open Organization Settings → edit company profile, locations, departments, timezone → save.
-- **Alternative:** duplicate location or invalid timezone → field error.
+- **Main flow:** open Organization Settings → edit company profile, timezone and locations → add or rename departments → save.
+- **Alternative:** duplicate location or department name, or invalid timezone → field error; a department still used by members or routing is deactivated, not deleted.
 - **Permission:** `org.settings`
 - **Result:** tenant settings updated; SLA calendars and routing use the new values
 
@@ -232,14 +238,59 @@ Every use case lists actor, preconditions, main flow, alternatives, permission a
 - **Permission:** `members.manage`
 - **Result:** access to the tenant matches the member list
 
-#### UC05 Activate or suspend a tenant *(P2)*
+#### UC05 Create and activate a tenant workspace
+
+- **Actor:** Platform Admin
+- **Preconditions:** signed in as Platform Admin
+- **Main flow:** open Tenants → New workspace → enter company name, plan and first Org Admin email → create → activate → the Org Admin receives an invitation.
+- **Alternative:** company name or admin email already used → field error, nothing created.
+- **Permission:** `tenant.create`
+- **Result:** an active, empty workspace that its Org Admin can set up (UC03, UC04, UC23)
+
+#### UC41 Suspend or reopen a tenant workspace *(P2)*
 
 - **Actor:** Platform Admin
 - **Preconditions:** tenant exists
-- **Main flow:** open Tenants → choose tenant → Suspend (with reason) or Activate → confirm.
-- **Alternative:** —
+- **Main flow:** open Tenants → choose tenant → Suspend (with reason) or Reopen → confirm.
+- **Alternative:** empty reason → error.
 - **Permission:** `tenant.lifecycle`
 - **Result:** suspended tenant becomes read-only; no ticket content is exposed to the Platform Admin
+
+#### UC42 View the organization list
+
+- **Actor:** Platform Admin
+- **Preconditions:** signed in as Platform Admin
+- **Main flow:** open Tenants → search or filter by status and plan → open a company to see contacts, limits and status.
+- **Alternative:** no match → empty state.
+- **Permission:** `tenant.read`
+- **Result:** an overview of all customer workspaces without any ticket content
+
+#### UC43 View the platform admin log
+
+- **Actor:** Platform Admin
+- **Preconditions:** signed in as Platform Admin
+- **Main flow:** open Tenants → Admin log → filter by admin, company, action and date → open an entry.
+- **Alternative:** no entries for the filters → empty state.
+- **Permission:** `platform.audit`
+- **Result:** every create, activate, suspend and reopen is traceable to one admin; the log is read-only
+
+#### UC39 Change my password
+
+- **Actor:** User
+- **Preconditions:** signed in
+- **Main flow:** My Profile → Password → enter current password and new password twice → save → other sessions of this user are signed out.
+- **Alternative:** wrong current password, mismatch or weak new password → error, password unchanged.
+- **Permission:** `password.change`
+- **Result:** only the account owner can change the password; the change is audited
+
+#### UC40 View my notifications
+
+- **Actor:** User
+- **Preconditions:** signed in
+- **Main flow:** open the bell or Notification Center → filter unread or by type → open a notification → land on the ticket, approval or device → it is marked as read.
+- **Alternative:** the linked record is no longer visible → "no longer available", no data shown.
+- **Permission:** `notification.read` *(own)*
+- **Result:** each user sees only their own notifications and reaches the source in one click
 
 ### Employee Self-service
 
@@ -301,7 +352,7 @@ Every use case lists actor, preconditions, main flow, alternatives, permission a
 
 #### UC12 Ask a question and get an answer from company guides
 
-- **Actors:** Employee; AI Provider (secondary)
+- **Actors:** Employee; External AI Service (secondary)
 - **Preconditions:** signed in; KB has published articles
 - **Main flow:** ask a question → backend retrieves only published articles the employee may read in this tenant → AI composes an answer with citations → citation opens the article.
 - **Alternative:** no relevant source → "no documented answer", offer catalog or draft; nothing invented.
@@ -310,7 +361,7 @@ Every use case lists actor, preconditions, main flow, alternatives, permission a
 
 #### UC13 Get step-by-step troubleshooting *(extends UC12)*
 
-- **Actors:** Employee; AI Provider (secondary)
+- **Actors:** Employee; External AI Service (secondary)
 - **Preconditions:** UC12 found a how-to article
 - **Main flow:** assistant lists the steps from the cited article → asks "It works now / Still not working".
 - **Alternative:** works → end, no ticket; not working → UC14.
@@ -319,7 +370,7 @@ Every use case lists actor, preconditions, main flow, alternatives, permission a
 
 #### UC14 Turn a chat into a ticket draft *(extends UC13)*
 
-- **Actors:** Employee; AI Provider (secondary)
+- **Actors:** Employee; External AI Service (secondary)
 - **Preconditions:** issue not solved, or no source found
 - **Main flow:** assistant proposes a request type → asks only missing required fields → shows the draft → employee edits and confirms → backend runs UC07 validation and creates the ticket.
 - **Alternative:** discard → nothing stored; request type needs a full form (e.g. laptop) → open the form pre-filled.
@@ -328,7 +379,7 @@ Every use case lists actor, preconditions, main flow, alternatives, permission a
 
 #### UC15 Ask in chat where my ticket stands
 
-- **Actors:** Employee; AI Provider (secondary)
+- **Actors:** Employee; External AI Service (secondary)
 - **Preconditions:** signed in
 - **Main flow:** ask "where is my ticket?" → read-only tool queries tickets of the current user → assistant answers with status and assignee and links to the ticket.
 - **Alternative:** asks about someone else's ticket → "I can only see your own tickets".

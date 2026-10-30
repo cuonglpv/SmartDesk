@@ -26,11 +26,12 @@ Each `AC-UCxx` block belongs to use case `UCxx` and user story `USxx`. The crite
 - Name, phone, department, location, avatar and notification preferences can be saved; success returns the updated profile *(prototype)*.
 - Role, email and tenant are read-only; a request that tries to change them returns `400` and changes nothing.
 
-### AC-UC03 — Update organization settings
+### AC-UC03 — Update organization settings and departments
 
 *Story US03 · Screen SCR-40*
 
 - Org Admin can update company name, timezone, locations and departments; changes apply only to the current tenant.
+- A department that is still used by members or routing can be deactivated but not deleted (`409`).
 - Non-admins receive `403`; invalid timezone or duplicate location name returns `400`.
 
 ### AC-UC04 — Invite, lock and assign member roles
@@ -41,12 +42,48 @@ Each `AC-UCxx` block belongs to use case `UCxx` and user story `USxx`. The crite
 - A locked member cannot sign in (`401`) but keeps all history; unlocking restores access.
 - Org Admin cannot remove the last Org Admin of the tenant (`409`); non-admins receive `403`.
 
-### AC-UC05 — Activate or suspend a tenant
+### AC-UC05 — Create and activate a tenant workspace
 
 *Story US05 · Screen SCR-50*
 
+- Creating a workspace stores company name and plan, activates it and sends an invitation to the first Org Admin.
+- A duplicate company name or admin email returns `400`; other roles receive `403`.
+
+### AC-UC41 — Suspend or reopen a tenant workspace *(Phase 2)*
+
+*Story US41 · Screen SCR-50*
+
+- Suspend and reopen require a reason and write an entry to the platform admin log.
 - A suspended tenant can sign in read-only; every create or update returns `403` with a "tenant suspended" reason.
 - Platform Admin sees tenant metadata only; ticket, comment and attachment endpoints return `403` for this role by default.
+
+### AC-UC42 — View the organization list
+
+*Story US42 · Screen SCR-50*
+
+- The list shows name, plan, status and start date for every tenant and can be filtered by status and plan.
+- No ticket, comment or attachment data appears in the list or the company detail; other roles receive `403`.
+
+### AC-UC43 — View the platform admin log
+
+*Story US43 · Screen SCR-50*
+
+- Every create, activate, suspend and reopen action appears with admin, company, action, reason and time.
+- The log is read-only: update and delete requests return `403`, also for Platform Admins.
+
+### AC-UC39 — Change my password
+
+*Story US39 · Screen SCR-02*
+
+- With the correct current password and a valid new password, the password changes and every other session of this user ends (`401` on its next call).
+- A wrong current password, mismatched confirmation or weak password returns `400` and changes nothing.
+
+### AC-UC40 — View my notifications
+
+*Story US40 · Screen SCR-03*
+
+- A user sees only notifications addressed to them; the unread count on the bell matches the list.
+- Opening a notification marks it as read and goes to its ticket, approval or device; if that record is no longer visible, the API returns `404` and no content is shown.
 
 ## Employee Self-service
 

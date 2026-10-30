@@ -8,11 +8,11 @@ Product name: **SmartDesk** — a multi-tenant SaaS for IT requests, IT assets a
 
 ## 1.1 Mind map
 
-The analysis goes top-down: problem → users → services → end-to-end flow → AI role → rules → scope → metrics. The editable source is [`mindmap/smartdesk.xmind`](mindmap/smartdesk.xmind) (open with XMind; sheet 1 = top-down analysis, sheet 2 = feature map).
+The analysis goes top-down: business problems → users & roles → service scope → request workflows → AI assistant → business rules & security → delivery roadmap → market & positioning → success metrics. The editable source is [`mindmap/smartdesk.xmind`](mindmap/smartdesk.xmind) (open with XMind; sheet 1 = top-down analysis, sheet 2 = feature map).
 
 ![SmartDesk top-down mind map](mindmap/mindmap-top-down.png)
 
-The second sheet decomposes the product into modules and features, in the same style as the reference project. Each leaf maps to one or more use cases in [02 — Use cases](02-use-cases.md).
+The second sheet decomposes the product into business modules (level 1, with their actors) and concrete user actions (level 2); items marked (V2) are outside the MVP. It is a functional map, not a UML use case diagram: some leaves group several actions and are normalised into use cases in [02 — Use cases](02-use-cases.md).
 
 ![SmartDesk feature map](mindmap/mindmap-features.png)
 
@@ -60,8 +60,8 @@ The second sheet decomposes the product into modules and features, in the same s
 | IT Staff | Work the queue, update tickets, hand over devices, write KB drafts | Approve their own requests when policy forbids it |
 | IT Manager | Assign, approve, set SLA, publish KB, report | Access another tenant's data |
 | Org Admin | Configure tenant, members, roles, service catalog | Administer other tenants |
-| Platform Admin | Manage tenant lifecycle of the SaaS | Read private ticket content by default |
-| AI provider (external) | Interpret questions, compose cited answers, prepare drafts | Write to the database, approve, provision, or read beyond the user's permission |
+| Platform Admin | List, create and activate customer workspaces; suspend or reopen them (Phase 2); read the platform admin log | Read private ticket content by default |
+| External AI Service | Interpret questions, compose cited answers, prepare drafts | Write to the database, approve, provision, or read beyond the user's permission |
 
 ## 1.5 Business definitions and rules
 
@@ -97,9 +97,9 @@ Sources:
 
 | Release | Contents | Use cases |
 |---|---|---|
-| **Release 1 — MVP** (all P0) | Sign-in, members/roles, catalog with 3 templates (VPN Incident, VPN Access, Laptop Provisioning), request forms, my tickets, AI FAQ + ticket draft, queue/triage/assign/resolve, approval decision, asset register + handover, KB draft/publish/search | 21 |
-| **Release 2 — V1 complete** (all P1) | Profile, org settings, my assets, troubleshooting guidance, my-ticket status via AI, transfer/escalate, links, approval rules, fulfilment checklist, device recovery, inventory view, SLA policies, alerts, reports | 14 |
-| **Phase 2** (P2) | ISP Change template and review, maintenance log, tenant activate/suspend | 3 |
+| **Release 1 — MVP** (all P0) | Sign-in, change password, members/roles, catalog with 3 templates (VPN Incident, VPN Access, Laptop Provisioning), request forms, my tickets, AI FAQ + ticket draft, queue/triage/assign/resolve, approval decision, asset register + handover, KB draft/publish/search | 22 |
+| **Release 2 — V1 complete** (all P1) | Profile, notification center, org settings and departments, my assets, troubleshooting guidance, my-ticket status via AI, transfer/escalate, links, approval rules, fulfilment checklist, device recovery, inventory view, SLA policies, alerts, reports, organization list, workspace creation, platform admin log | 18 |
+| **Phase 2** (P2) | ISP Change template and review, maintenance log, workspace suspend/reopen | 3 |
 
 **Out of scope:** automatic control of VPN/AD/ISP or network configuration, logs/metrics/tracing, on-call paging, multi-agent chatbots, ERP/accounting, real subscription billing, native mobile app.
 

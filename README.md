@@ -4,7 +4,7 @@ SmartDesk is a multi-tenant SaaS that gives small and mid-sized companies one pl
 
 ## 1. Problem Analysis — Top-down Research
 
-The problem is decomposed top-down: why the product is needed, who uses it, which services it covers, how a request flows end to end, where the AI fits, which rules are non-negotiable, what is in scope and how success is measured.
+The problem is decomposed top-down: why the product is needed, who uses it, which services it covers, how a request flows end to end, where the AI fits, which rules are non-negotiable, what ships in which release, how the product is positioned against the market and how success is measured.
 
 ### 1.1 Mind map
 
@@ -21,10 +21,10 @@ Editable XMind source: [`docs/mindmap/smartdesk.xmind`](docs/mindmap/smartdesk.x
 | Area | Summary |
 |---|---|
 | Problem | Requests lost across chat/email; employees cannot pick a request type; repeated incidents; device handover without approval trail; no SLA visibility. |
-| Users | Employee, IT Staff, IT Manager, Org Admin, Platform Admin; external AI provider as a secondary actor. |
+| Users | Employee, IT Staff, IT Manager, Org Admin, Platform Admin; External AI Service as a secondary actor. |
 | Services | Incident (VPN, Wi-Fi, printer), Service Request (VPN access, laptop), Change (office ISP, Phase 2), assets, knowledge base. |
 | Market evidence | Jira Service Management and Freshservice Freddy AI show the ITSM feature set and AI self-service are established; willingness to pay is **not yet validated**. |
-| Scope | Release 1 = 21 P0 stories (VPN incident + laptop request + KB + AI); Release 2 = 14 P1; Phase 2 = 3 P2. |
+| Scope | Release 1 = 22 P0 stories (VPN incident + laptop request + KB + AI); Release 2 = 18 P1; Phase 2 = 3 P2. |
 
 Full analysis: [Top-down research](docs/01-top-down-research.md).
 
@@ -32,7 +32,7 @@ Full analysis: [Top-down research](docs/01-top-down-research.md).
 
 ### 2.1 Use case diagrams
 
-Three views cover all 38 use cases and all actors.
+Three views cover all 43 use cases and all actors.
 
 ![Use cases: Employee and AI Assistant](docs/images/use-cases/uc-1-employee.png)
 
@@ -56,7 +56,7 @@ The API enforces role, tenant and ownership; hiding controls in the UI is only f
 
 ### 2.3 INVEST backlog
 
-The backlog has 38 user stories, one per use case. Each story lists its dependencies, links to an `AC-UCxx` acceptance block and has a per-story INVEST review. Every use case is specified with actor, preconditions, main flow, alternatives, permission and result.
+The backlog has 43 user stories, one per use case. Each story lists its dependencies, links to an `AC-UCxx` acceptance block and has a per-story INVEST review. Every use case is specified with actor, preconditions, main flow, alternatives, permission and result.
 
 | Criterion | Meaning in SmartDesk |
 |---|---|
@@ -142,7 +142,7 @@ Requirements: Python 3.10+ with Pillow, and Chrome or Edge for headless renderin
 
 - [x] Top-down problem analysis and market evidence
 - [x] Mind map (XMind) — top-down analysis and feature map
-- [x] Use case diagrams covering 38 use cases and 6 actors
+- [x] Use case diagrams covering 43 use cases and 6 actors
 - [x] INVEST backlog with dependencies, acceptance criteria and release plan
 - [x] Relume-style information architecture (30 pages with functional sections)
 - [x] UX principles, user flows and screen states

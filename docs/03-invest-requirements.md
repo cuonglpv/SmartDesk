@@ -28,6 +28,7 @@ US23–US27   Catalog, approval and fulfilment
 US28–US32   IT assets
 US33–US35   Knowledge base
 US36–US38   SLA and reporting
+US39–US43   Identity and platform administration (added after the feature map review)
 ```
 
 ## Product backlog
@@ -36,9 +37,9 @@ US36–US38   SLA and reporting
 |---|---|---|---|---|---|
 | US01 | As a **user**, I want to sign in and sign out so that only valid members reach my organization's workspace. | Protected access | P0 | Seeded tenant and account | [AC-UC01](06-acceptance-criteria.md#ac-uc01--sign-in-and-sign-out) |
 | US02 | As a **user**, I want to view and edit my profile so that IT can contact and route me correctly. | Accurate contact data | P1 | US01 | [AC-UC02](06-acceptance-criteria.md#ac-uc02--view-and-edit-my-profile) |
-| US03 | As an **Org Admin**, I want to update organization settings (name, timezone, locations, departments) so that routing and SLA use the right context. | Correct tenant setup | P1 | US01 | [AC-UC03](06-acceptance-criteria.md#ac-uc03--update-organization-settings) |
+| US03 | As an **Org Admin**, I want to update organization settings (name, timezone, locations) and add or edit departments so that routing and SLA use the right context. | Correct tenant setup | P1 | US01 | [AC-UC03](06-acceptance-criteria.md#ac-uc03--update-organization-settings-and-departments) |
 | US04 | As an **Org Admin**, I want to invite, lock and assign roles to members so that access stays controlled. | Access control | P0 | US01 | [AC-UC04](06-acceptance-criteria.md#ac-uc04--invite-lock-and-assign-member-roles) |
-| US05 | As a **Platform Admin**, I want to activate or suspend a tenant so that I can manage the SaaS lifecycle. | Tenant lifecycle | P2 | — | [AC-UC05](06-acceptance-criteria.md#ac-uc05--activate-or-suspend-a-tenant) |
+| US05 | As a **Platform Admin**, I want to create and activate a tenant workspace so that a new customer can start setting it up. | Customer onboarding | P1 | US01 | [AC-UC05](06-acceptance-criteria.md#ac-uc05--create-and-activate-a-tenant-workspace) |
 | US06 | As an **employee**, I want to browse the IT service catalog so that I can find the right request type. | Right request first time | P0 | US23 | [AC-UC06](06-acceptance-criteria.md#ac-uc06--browse-the-it-service-catalog) |
 | US07 | As an **employee**, I want to submit a request through a form for that service so that IT gets complete data. | Complete tickets | P0 | US06 | [AC-UC07](06-acceptance-criteria.md#ac-uc07--submit-a-request-with-the-right-form) |
 | US08 | As an **employee**, I want to find and track my tickets so that I know the progress and who is handling them. | Transparency | P0 | US07 | [AC-UC08](06-acceptance-criteria.md#ac-uc08--find-and-track-my-tickets) |
@@ -72,6 +73,11 @@ US36–US38   SLA and reporting
 | US36 | As an **IT Manager**, I want to configure SLA targets by type and priority so that support commitments are explicit. | Clear commitments | P1 | US17 | [AC-UC36](06-acceptance-criteria.md#ac-uc36--set-sla-targets-by-type-and-priority) |
 | US37 | As an **IT Manager**, I want near-breach and breach alerts so that fewer tickets are missed. | Fewer breaches | P1 | US36 | [AC-UC37](06-acceptance-criteria.md#ac-uc37--get-alerts-when-a-deadline-is-at-risk) |
 | US38 | As an **IT Manager**, I want to view and export operations reports so that I can measure support performance. | Measurable performance | P1 | US16, US36 | [AC-UC38](06-acceptance-criteria.md#ac-uc38--view-and-export-operations-reports) |
+| US39 | As a **user**, I want to change my password so that I can keep my account safe without asking IT. | Account security | P0 | US01 | [AC-UC39](06-acceptance-criteria.md#ac-uc39--change-my-password) |
+| US40 | As a **user**, I want to see my notifications in one place so that I never miss an update, approval or deadline. | Nothing missed | P1 | US01 | [AC-UC40](06-acceptance-criteria.md#ac-uc40--view-my-notifications) |
+| US41 | As a **Platform Admin**, I want to suspend or reopen a tenant workspace so that I can manage the SaaS lifecycle. | Tenant lifecycle | P2 | US05 | [AC-UC41](06-acceptance-criteria.md#ac-uc41--suspend-or-reopen-a-tenant-workspace-phase-2) |
+| US42 | As a **Platform Admin**, I want to see the list of organizations so that I know which workspaces exist and their status. | Platform overview | P1 | US05 | [AC-UC42](06-acceptance-criteria.md#ac-uc42--view-the-organization-list) |
+| US43 | As a **Platform Admin**, I want to read the platform admin log so that every admin action is traceable. | Accountability | P1 | US05 | [AC-UC43](06-acceptance-criteria.md#ac-uc43--view-the-platform-admin-log) |
 
 ## Acceptance criteria
 
@@ -87,7 +93,7 @@ Every story links to its `AC-UCxx` block in [06 — Acceptance criteria](06-acce
 | US02 | PASS | PASS | PASS | PASS | PASS | PASS | Editable fields listed explicitly. |
 | US03 | PASS | PASS | PASS | PASS | PASS | PASS | |
 | US04 | PASS | PASS | PASS | PASS | PASS | PASS | Split tasks: invite, role change, lock/unlock. |
-| US05 | PASS | PASS | PASS | PASS | PASS | PASS | Suspended = read-only. |
+| US05 | PASS | PASS | PASS | PASS | PASS | PASS | Creates an empty workspace and invites the first Org Admin. |
 | US06 | PASS | PASS | PASS | PASS | PASS | PASS | Needs at least one published type (seed data). |
 | US07 | PASS | PASS | PASS | PASS | PASS | PASS | Field schema comes from US23. |
 | US08 | PASS | PASS | PASS | PASS | PASS | PASS | |
@@ -121,6 +127,11 @@ Every story links to its `AC-UCxx` block in [06 — Acceptance criteria](06-acce
 | US36 | PASS | PASS | PASS | PASS | PASS | PASS | Default thresholds 80% / 100%. |
 | US37 | PASS | PASS | PASS | PASS | PASS | PASS | |
 | US38 | PASS | PASS | PASS | PASS | PASS | PASS | CSV and PDF only. |
+| US39 | PASS | PASS | PASS | PASS | PASS | PASS | Requires the current password; other sessions are signed out. |
+| US40 | PASS | PASS | PASS | PASS | PASS | PASS | Notifications are produced by other stories; this story only lists and opens them. |
+| US41 | PASS | PASS | PASS | PASS | PASS | PASS | Suspended = read-only. |
+| US42 | PASS | PASS | PASS | PASS | PASS | PASS | Metadata only, never ticket content. |
+| US43 | PASS | PASS | PASS | PASS | PASS | PASS | Read-only log. |
 
 ## Release plan
 
@@ -128,9 +139,9 @@ Releases follow priority, and every dependency points to the same or an earlier 
 
 | Release | Stories | Demo journey |
 |---|---|---|
-| **Release 1 — MVP** (21 × P0) | US01, 04, 06, 07, 08, 09, 10, 12, 14, 16, 17, 18, 19, 21, 23, 25, 28, 29, 33, 34, 35 | S1 VPN incident through AI; S2 laptop request with approval and handover |
-| **Release 2 — V1 complete** (14 × P1) | US02, 03, 11, 13, 15, 20, 22, 24, 26, 30, 32, 36, 37, 38 | SLA alerts and reports; troubleshooting guidance; device recovery |
-| **Phase 2** (3 × P2) | US05, 27, 31 | S3 ISP change; maintenance log; tenant lifecycle |
+| **Release 1 — MVP** (22 × P0) | US01, 04, 06, 07, 08, 09, 10, 12, 14, 16, 17, 18, 19, 21, 23, 25, 28, 29, 33, 34, 35, 39 | S1 VPN incident through AI; S2 laptop request with approval and handover |
+| **Release 2 — V1 complete** (18 × P1) | US02, 03, 05, 11, 13, 15, 20, 22, 24, 26, 30, 32, 36, 37, 38, 40, 42, 43 | SLA alerts and reports; troubleshooting guidance; device recovery; workspace onboarding |
+| **Phase 2** (3 × P2) | US27, 31, 41 | S3 ISP change; maintenance log; tenant lifecycle |
 
 ## Cross-cutting acceptance constraints
 

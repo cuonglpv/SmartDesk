@@ -11,103 +11,124 @@ sitemap) reads from this module so that the documents and images never drift.
 TOP_DOWN_ROOT = "SmartDesk\nAI-assisted IT Helpdesk SaaS"
 
 TOP_DOWN = [
-    ("Why we need it", [
-        "IT requests get lost in chat, email and hallway talk",
-        "Employees don't know which request to choose",
-        "The same issues keep coming back",
-        "How-to guides are scattered everywhere",
-        "Laptops are handed out with no approval or record",
-        "Managers can't see backlog, deadlines or workload",
+    ("01 — Business Problems", [
+        "IT requests scattered across channels",
+        "Wrong request types",
+        "Repeated issues",
+        "Scattered guides",
+        "Missing device approval trails",
+        "Poor management visibility",
     ]),
-    ("Who uses it", [
-        "Employees ask for help and follow their requests",
-        "IT Staff sort, fix and deliver",
-        "IT Managers approve, set deadlines, read reports",
-        "Org Admins set up people, roles and services",
-        "Platform Admins look after customer workspaces",
-        "The AI model helps, but can only read",
+    ("02 — Users & Roles", [
+        "Employees: raise and track requests",
+        "IT Staff: triage, resolve, fulfil",
+        "IT Managers: approve, set SLAs, report",
+        "Org Admins: users, roles, service catalog",
+        "Platform Admins: tenant workspaces",
+        "External AI Service: read-only assistant",
     ]),
-    ("What it handles", [
-        "Something broke: VPN, Wi-Fi, printer",
-        "Something needed: VPN access, laptop, software",
-        "Something to change: the office internet provider",
-        "Which devices we own and who has them",
-        "A library of how-to guides",
+    ("03 — Service Scope", [
+        "Incident",
+        "Service Request",
+        "Change Request (Phase 2)",
+        "IT Asset Management",
+        "Knowledge Base",
     ]),
-    ("How a request flows", [
-        "Try self-help first, then send a ticket",
-        "IT sorts it, assigns it and fixes it",
-        "Manager approves, IT delivers the device",
-        "Employee confirms or reopens; everything is logged",
+    ("04 — Request Workflows", [
+        "Self-service or direct submission",
+        "IT triage",
+        "Branch handling by request type",
+        "Resolution",
+        "Confirmation or reopen",
+        "Audit trail",
     ]),
-    ("What the market shows", [
-        "Jira Service Management: forms, queues, SLAs, assets",
-        "Freshservice Freddy AI: self-service answers with sources",
-        "Our angle: quick setup for small IT teams",
-        "Still to check: will companies pay, and how much",
+    ("05 — AI Assistant", [
+        "Cited KB answers",
+        "No-source fallback",
+        "Ticket draft (Release 1)",
+        "Guided troubleshooting (Release 2)",
+        "Ticket status lookup (Release 2)",
     ]),
-    ("AI assistant", [
-        "Answers from company guides and shows the source",
-        "Walks people through a fix step by step",
-        "Turns a chat into a ticket draft",
-        "Tells you where your own tickets stand",
-        "Says \"I don't know\" instead of guessing",
+    ("06 — Business Rules & Security", [
+        "Tenant isolation",
+        "Server-side authorization",
+        "Separate workflows",
+        "Human approvals",
+        "Bounded AI permissions",
+        "Audit log",
+        "Asset assignment constraints",
     ]),
-    ("Ground rules", [
-        "Each company sees only its own data",
-        "The server checks every permission",
-        "Incidents, requests and changes follow their own steps",
-        "AI never approves, assigns or changes anything",
-        "Every action is logged; no duplicate tickets",
+    ("07 — Delivery Roadmap", [
+        "Release 1: core service desk + AI intake",
+        "Release 2: SLA, advanced workflows, reporting",
+        "Phase 2: ISP changes, maintenance, tenant lifecycle",
     ]),
-    ("What we build when", [
-        "Release 1: VPN issues, laptops, guides, AI",
-        "Release 2: approval rules, SLAs, alerts, reports",
-        "Phase 2: internet changes, repair log, workspaces",
-        "Not planned: network automation, ERP, mobile app",
+    ("08 — Market & Positioning", [
+        "Jira Service Management",
+        "Freshservice Freddy AI",
+        "SME target hypothesis",
+        "Simple setup differentiation",
+        "Buyer and pricing validation",
     ]),
-    ("How we measure success", [
-        "Issues solved without IT",
-        "Tickets that need no follow-up questions",
-        "Time it takes to send a ticket",
-        "Deadlines met and tickets reopened",
-        "AI answers that cite the right guide",
+    ("09 — Success Metrics", [
+        "Self-service resolution",
+        "First-submission completeness",
+        "Submission time",
+        "AI grounding quality",
+        "SLA performance",
+        "Asset accountability",
     ]),
 ]
 
-FEATURE_ROOT = "SmartDesk\nFeature map"
+FEATURE_ROOT = "SmartDesk\nFeature map\n(V2) = not in MVP"
 
+# Level 1: business module (second line = actors). Level 2: user actions.
 FEATURES = [
-    ("Accounts & access", [
-        "Sign in and sign out", "Edit my profile", "Company settings",
-        "Invite people and set roles", "Pause or reopen a workspace",
+    ("Account & Organization\nEmployee · Org Admin", [
+        "Sign in / sign out", "View my profile", "Update my profile", "Change password",
+        "View employee list", "Invite / lock employee accounts",
+        "Assign roles to employees", "Add / edit departments",
     ]),
-    ("Employee self-service", [
-        "Browse IT services", "Fill in a request form", "Follow my tickets",
-        "Add comments and files", "Confirm the fix or reopen", "See my devices",
+    ("Employee Service Portal\nEmployee", [
+        "Browse the IT service catalog", "Report a VPN / network issue",
+        "Request VPN access", "Request a laptop", "Request an ISP change (V2)",
+        "View and search my tickets", "Comment / attach files",
+        "Confirm resolution / reopen", "View my assigned devices",
     ]),
-    ("AI assistant", [
-        "Answers with sources", "Step-by-step fixes",
-        "Ticket draft from a chat", "\"Where's my ticket?\"",
+    ("AI Assistant\nEmployee", [
+        "Ask the AI an FAQ", "View answer sources", "Get self-fix guidance",
+        "Ask the AI to draft a ticket", "Add details to the draft",
+        "View / edit the draft", "Confirm and submit the AI draft",
     ]),
-    ("Ticket handling", [
-        "Queue with filters", "Sort and prioritise", "Assign or pick up",
-        "Replies and internal notes", "Hand over or escalate", "Resolve and close",
-        "Link a device or ticket",
+    ("Catalog & Approvals\nOrg Admin · IT Manager · Approver", [
+        "Add an IT service", "Edit / retire a service", "Configure request forms",
+        "Configure approval rules", "View pending approvals",
+        "Approve / reject requests", "Assign fulfilment work",
+        "Confirm delivery is complete",
     ]),
-    ("Services & approvals", [
-        "Request forms", "Approval rules", "Approve or reject with a reason",
-        "Delivery checklist", "Internet provider changes",
+    ("Knowledge Base\nEmployee · IT Staff", [
+        "Search IT guides", "Read a guide", "Create an article draft",
+        "Edit an article draft", "Review / publish articles", "Archive outdated articles",
     ]),
-    ("IT devices", [
-        "Add and update devices", "Hand over a device", "Take a device back",
-        "Repair log", "Stock and history",
+    ("Ticket Handling\nIT Staff · IT Manager", [
+        "View the ticket queue", "Search / filter tickets", "View ticket details",
+        "Categorize / set priority", "Accept / assign tickets", "Update ticket status",
+        "Reply to the employee", "Add internal notes", "Transfer / escalate",
+        "Mark as Resolved", "Close per policy",
     ]),
-    ("How-to guides", [
-        "Write drafts", "Review and publish", "Search and read",
+    ("IT Assets\nIT Staff · IT Manager", [
+        "View / search devices", "Add a new device", "Update device details",
+        "Retire a device", "Assign a device", "Recall a device",
+        "Record handover / maintenance", "View device usage history",
     ]),
-    ("Deadlines & reports", [
-        "SLA targets", "Deadline alerts", "Reports and export",
+    ("SLA & Reporting\nIT Manager · IT Staff", [
+        "Set SLA policies", "Track ticket due dates", "View overdue alerts",
+        "View my notifications", "View the ticket dashboard",
+        "View IT performance reports", "Export reports",
+    ]),
+    ("SaaS Administration\nPlatform Admin", [
+        "View organization list", "Create / activate workspaces",
+        "Suspend / reopen workspaces (V2)", "View platform admin log",
     ]),
 ]
 
@@ -119,9 +140,9 @@ FEATURES = [
 USE_CASES = {
     "UC01": ("Sign in and sign out", "Identity & Tenant", "P0", ["User"]),
     "UC02": ("View and edit my profile", "Identity & Tenant", "P1", ["User"]),
-    "UC03": ("Update organization settings", "Identity & Tenant", "P1", ["Org Admin"]),
+    "UC03": ("Update organization settings and departments", "Identity & Tenant", "P1", ["Org Admin"]),
     "UC04": ("Invite, lock and assign member roles", "Identity & Tenant", "P0", ["Org Admin"]),
-    "UC05": ("Activate or suspend a tenant", "Identity & Tenant", "P2", ["Platform Admin"]),
+    "UC05": ("Create and activate a tenant workspace", "Identity & Tenant", "P1", ["Platform Admin"]),
     "UC06": ("Browse the IT service catalog", "Employee Self-service", "P0", ["Employee"]),
     "UC07": ("Submit a request with the right form", "Employee Self-service", "P0", ["Employee"]),
     "UC08": ("Find and track my tickets", "Employee Self-service", "P0", ["Employee"]),
@@ -155,27 +176,32 @@ USE_CASES = {
     "UC36": ("Set SLA targets by type and priority", "SLA & Reporting", "P1", ["IT Manager"]),
     "UC37": ("Get alerts when a deadline is at risk", "SLA & Reporting", "P1", ["IT Manager"]),
     "UC38": ("View and export operations reports", "SLA & Reporting", "P1", ["IT Manager"]),
+    "UC39": ("Change my password", "Identity & Tenant", "P0", ["User"]),
+    "UC40": ("View my notifications", "Identity & Tenant", "P1", ["User"]),
+    "UC41": ("Suspend or reopen a tenant workspace", "Identity & Tenant", "P2", ["Platform Admin"]),
+    "UC42": ("View the organization list", "Identity & Tenant", "P1", ["Platform Admin"]),
+    "UC43": ("View the platform admin log", "Identity & Tenant", "P1", ["Platform Admin"]),
 }
 
 AI_SUPPORTED = ["UC12", "UC13", "UC14", "UC15"]
 
-# Three diagrams keep every view readable; together they cover all 38 use cases.
+# Three diagrams keep every view readable; together they cover all 43 use cases.
 UC_DIAGRAMS = [
     {
         "file": "uc-1-employee",
         "title": "SmartDesk — Use cases: Employee & AI Assistant",
         "left": ["User", "Employee"],
-        "right": ["AI Provider"],
+        "right": ["External AI Service"],
         "packages": [
-            ("Identity", ["UC01", "UC02"]),
+            ("Identity", ["UC01", "UC02", "UC39", "UC40"]),
             ("Employee Self-service", ["UC06", "UC07", "UC08", "UC09", "UC10", "UC11"]),
             ("Knowledge Base", ["UC35"]),
             ("AI Assistant", ["UC12", "UC13", "UC14", "UC15"]),
         ],
-        "links": {"User": ["UC01", "UC02"],
+        "links": {"User": ["UC01", "UC02", "UC39", "UC40"],
                   "Employee": ["UC06", "UC07", "UC08", "UC09", "UC10", "UC11",
                                "UC35", "UC12", "UC13", "UC14", "UC15"],
-                  "AI Provider": AI_SUPPORTED},
+                  "External AI Service": AI_SUPPORTED},
         "generalization": [("Employee", "User")],
         "extends": [("UC13", "UC12"), ("UC14", "UC13")],
     },
@@ -204,12 +230,13 @@ UC_DIAGRAMS = [
             ("Tickets & Approval", ["UC18", "UC20", "UC24", "UC25", "UC27"]),
             ("Assets & Knowledge", ["UC32", "UC34"]),
             ("SLA & Reporting", ["UC36", "UC37", "UC38"]),
-            ("Tenant Administration", ["UC03", "UC04", "UC23", "UC05"]),
+            ("Tenant Administration", ["UC03", "UC04", "UC23"]),
+            ("Platform Administration", ["UC42", "UC05", "UC41", "UC43"]),
         ],
         "links": {"IT Manager": ["UC18", "UC20", "UC24", "UC25", "UC27", "UC32", "UC34",
                                  "UC36", "UC37", "UC38"],
                   "Org Admin": ["UC03", "UC04", "UC23"],
-                  "Platform Admin": ["UC05"]},
+                  "Platform Admin": ["UC42", "UC05", "UC41", "UC43"]},
         "generalization": [],
         "extends": [],
     },
@@ -237,14 +264,15 @@ SCREENS = [
         ("Need help?", "How to reset your password or reach IT"),
     ]},
     {"id": "SCR-02", "name": "My Profile", "group": "Shared", "route": "/profile",
-     "roles": "All", "ucs": ["UC02", "UC01"], "sections": [
+     "roles": "All", "ucs": ["UC02", "UC39", "UC01"], "sections": [
         ("Your details", "Name, phone, department, location and photo"),
         ("Your role", "Shows your role and company; only an admin can change it"),
+        ("Password", "Change your password after entering the current one"),
         ("Notifications", "Choose email or in-app alerts for updates and approvals"),
         ("Sign out", "End your session on this device"),
     ]},
     {"id": "SCR-03", "name": "Notification Center", "group": "Shared", "route": "/notifications",
-     "roles": "All", "ucs": ["UC37", "UC10", "UC25"], "sections": [
+     "roles": "All", "ucs": ["UC40", "UC37", "UC10", "UC25"], "sections": [
         ("Notification list", "Ticket updates, approvals and deadline warnings, newest first"),
         ("Filters", "Show unread only, or filter by type and date"),
         ("Open the source", "Jump straight to the ticket, approval or device"),
@@ -432,7 +460,7 @@ SCREENS = [
     {"id": "SCR-40", "name": "Organization Settings", "group": "Admin", "route": "/admin/org",
      "roles": "Org Admin", "ucs": ["UC03"], "sections": [
         ("Company profile", "Name, logo and default language"),
-        ("Offices & teams", "Used to send tickets to the right people"),
+        ("Offices & departments", "Add or edit offices and departments used for routing"),
         ("Regional settings", "Timezone and date format"),
     ]},
     {"id": "SCR-41", "name": "Members & Roles", "group": "Admin", "route": "/admin/members",
@@ -450,10 +478,12 @@ SCREENS = [
         ("Preview & publish", "Try it as an employee, then publish"),
     ]},
     {"id": "SCR-50", "name": "Tenants", "group": "Admin", "route": "/platform/tenants",
-     "roles": "Platform Admin", "ucs": ["UC05"], "sections": [
+     "roles": "Platform Admin", "ucs": ["UC42", "UC05", "UC41", "UC43"], "sections": [
         ("Companies", "Name, plan, status and start date"),
-        ("Pause / reopen", "A paused company can only read its data"),
+        ("New workspace", "Create a company workspace and activate it"),
+        ("Suspend / reopen (V2)", "A suspended company can only read its data"),
         ("Company details", "Contacts and limits only, never ticket content"),
+        ("Admin log", "Every platform admin action, who did it and when"),
     ]},
 ]
 

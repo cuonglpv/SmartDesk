@@ -262,7 +262,7 @@ docs/images/ui/
 
 | Built and interactive | Specified only (section placeholders) | Not in the prototype |
 |---|---|---|
-| `SCR-01`, `SCR-02`, `SCR-04`, `SCR-10`–`SCR-18`, `SCR-20`–`SCR-24`, `SCR-30`, `SCR-33` | `SCR-26`, `SCR-32`, `SCR-34` | `SCR-03`, `SCR-25`, `SCR-31`, `SCR-35`, `SCR-40`–`SCR-42`, `SCR-50` (see the [IA](04-information-architecture.md)) |
+| `SCR-01`, `SCR-02`, `SCR-04`, `SCR-10`–`SCR-18`, `SCR-20`–`SCR-24`, `SCR-30`, `SCR-33` | `SCR-26`, `SCR-32`, `SCR-34`; the Password section of `SCR-02` (UC39) | `SCR-03`, `SCR-25`, `SCR-31`, `SCR-35`, `SCR-40`–`SCR-42`, `SCR-50` (see the [IA](04-information-architecture.md)) |
 
 Demo accounts on the Sign In page: `an@`, `minh@`, `quang@acme.example`, password `demo1234` (mock data only). The `?demo=` shortcuts used for the screenshots are listed in [`tools/capture_ui.py`](../tools/capture_ui.py).
 

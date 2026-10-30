@@ -66,6 +66,7 @@ def build_xmind():
 MAIN_FS, SUB_FS, ROOT_FS = 21, 16, 34
 SUB_H, SUB_GAP, BLOCK_GAP = 34, 10, 34
 MAIN_H = 50
+MAIN_SUB_FS, MAIN_LINE_H = 15, 24  # second line of a main topic (actors)
 PAD_X = 16
 
 
@@ -90,9 +91,12 @@ def render_sheet(root, branches, name):
     right = list(range((n + 1) // 2))
     left = list(range((n + 1) // 2, n))[::-1]  # clockwise: left side bottom -> top
 
+    def main_h(i):
+        return MAIN_H + MAIN_LINE_H * (len(branches[i][0].split("\n")) - 1)
+
     def block_h(i):
         k = len(branches[i][1])
-        return max(MAIN_H, k * SUB_H + (k - 1) * SUB_GAP)
+        return max(main_h(i), k * SUB_H + (k - 1) * SUB_GAP)
 
     def side_h(idx):
         return sum(block_h(i) for i in idx) + BLOCK_GAP * (len(idx) - 1)
@@ -102,7 +106,9 @@ def render_sheet(root, branches, name):
     root_w = max(text_width(t, ROOT_FS if j == 0 else 20, True) for j, t in enumerate(root_lines)) + 70
     root_h = 64 + 30 * (len(root_lines) - 1)
 
-    main_w = {i: text_width(b, MAIN_FS, True) + 2 * PAD_X + 8 for i, (b, _) in enumerate(branches)}
+    main_w = {i: max(text_width(t, MAIN_FS if j == 0 else MAIN_SUB_FS, j == 0)
+                     for j, t in enumerate(b.split("\n"))) + 2 * PAD_X + 8
+              for i, (b, _) in enumerate(branches)}
     sub_w = {i: max(text_width(s, SUB_FS) for s in leaves) + 2 * PAD_X
              for i, (_, leaves) in enumerate(branches)}
     reach = lambda idx: max((main_w[i] + 60 + sub_w[i] for i in idx), default=0)
@@ -130,11 +136,18 @@ def render_sheet(root, branches, name):
                 f"<path d='M{sx:.1f},{cy:.1f} C{sx + side * 70:.1f},{cy:.1f} "
                 f"{ex - side * 80:.1f},{my:.1f} {ex:.1f},{my:.1f}' fill='none' "
                 f"stroke='{color}' stroke-width='4' stroke-linecap='round'/>")
+            mh = main_h(i)
+            lines = title.split("\n")
             nodes.append(
-                f"<rect x='{mx:.1f}' y='{my - MAIN_H / 2:.1f}' width='{mw:.1f}' height='{MAIN_H}' "
-                f"rx='12' fill='{color}' stroke='{shade(color, 0.18)}' stroke-width='2.5'/>"
-                f"<text x='{mx + mw / 2:.1f}' y='{my + 7:.1f}' text-anchor='middle' "
-                f"font-size='{MAIN_FS}' font-weight='700' fill='#fff'>{esc(title)}</text>")
+                f"<rect x='{mx:.1f}' y='{my - mh / 2:.1f}' width='{mw:.1f}' height='{mh}' "
+                f"rx='12' fill='{color}' stroke='{shade(color, 0.18)}' stroke-width='2.5'/>")
+            for j, line in enumerate(lines):
+                ty = my + 7 - MAIN_LINE_H * (len(lines) - 1) / 2 + j * MAIN_LINE_H
+                nodes.append(
+                    f"<text x='{mx + mw / 2:.1f}' y='{ty:.1f}' text-anchor='middle' "
+                    f"font-size='{MAIN_FS if j == 0 else MAIN_SUB_FS}' "
+                    f"font-weight='{700 if j == 0 else 500}' fill='#fff' "
+                    f"opacity='{1 if j == 0 else .92}'>{esc(line)}</text>")
             # main -> subtopics (elbow bracket)
             k = len(leaves)
             sy0 = my - (k * SUB_H + (k - 1) * SUB_GAP) / 2

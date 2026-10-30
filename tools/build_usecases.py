@@ -119,13 +119,13 @@ def build(diagram):
                     f"fill='#475569'>«extend»</text>")
 
     actors = "".join(actor_svg(lx, y, a) for a, y in left.items())
-    actors += "".join(actor_svg(rx, y, a, secondary=(a == "AI Provider")) for a, y in right.items())
+    actors += "".join(actor_svg(rx, y, a, secondary=(a == "External AI Service")) for a, y in right.items())
 
     legend = ""
     if any(u in model.AI_SUPPORTED for u in pos):
         legend = (f"<ellipse cx='{BOUND_X + 40}' cy='{height - 22}' rx='16' ry='9' fill='{AI_FILL}' "
                   f"stroke='{AI_STROKE}'/><text x='{BOUND_X + 64}' y='{height - 17}' font-size='14' "
-                  f"fill='#475569'>AI-assisted use case (AI provider is a secondary actor)</text>")
+                  f"fill='#475569'>AI-assisted use case (External AI Service is a secondary actor)</text>")
 
     title = (f"<text x='{width / 2}' y='44' text-anchor='middle' font-size='26' font-weight='700' "
              f"fill='{INK}'>{esc(diagram['title'])}</text>")

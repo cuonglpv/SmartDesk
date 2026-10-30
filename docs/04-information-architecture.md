@@ -2,7 +2,7 @@
 
 > Design status: TARGET V1
 >
-> 30 pages · 5 role-based areas · 38/38 use cases have an entry screen
+> 30 pages · 5 role-based areas · 43/43 use cases have an entry screen
 
 The sitemap follows the **Relume** convention: every page is a card, and every card lists the **sections** that make up that page. Because SmartDesk is an internal application, each section is a *functional* block (what the user can see or do), not a marketing block such as "Hero" or "CTA".
 
@@ -101,10 +101,10 @@ SmartDesk
 | `SCR-33` | **SLA & Reports** | `/manage/reports` | IT Manager | Filters; Key numbers; At-risk tickets; Charts; Export | UC37, UC38 |
 | `SCR-34` | **SLA Policies** | `/manage/sla` | IT Manager | Working hours; Targets; Alerts; Pause rules | UC36 |
 | `SCR-35` | **Approval Rules** | `/manage/approval-rules` | IT Manager | Rules; Approver; When it applies; Start date | UC24 |
-| `SCR-40` | **Organization Settings** | `/admin/org` | Org Admin | Company profile; Offices & teams; Regional settings | UC03 |
+| `SCR-40` | **Organization Settings** | `/admin/org` | Org Admin | Company profile; Offices & departments; Regional settings | UC03 |
 | `SCR-41` | **Members & Roles** | `/admin/members` | Org Admin | Members; Invite; Roles; Lock / unlock | UC04 |
 | `SCR-42` | **Catalog Builder** | `/admin/catalog` | Org Admin | Services; Form fields; Routing; Preview & publish | UC23 |
-| `SCR-50` | **Tenants** | `/platform/tenants` | Platform Admin | Companies; Pause / reopen; Company details | UC05 |
+| `SCR-50` | **Tenants** | `/platform/tenants` | Platform Admin | Companies; New workspace; Suspend / reopen (V2); Company details; Admin log | UC42, UC05, UC41, UC43 |
 
 The one-line description of every section is on the page cards above; the source of truth for both is [`tools/model.py`](../tools/model.py).
 
@@ -114,9 +114,9 @@ The one-line description of every section is on the page cards above; the source
 |---|---|---|
 | UC01 | Sign in and sign out | `SCR-01` Sign In, `SCR-02` My Profile |
 | UC02 | View and edit my profile | `SCR-02` My Profile |
-| UC03 | Update organization settings | `SCR-40` Organization Settings |
+| UC03 | Update organization settings and departments | `SCR-40` Organization Settings |
 | UC04 | Invite, lock and assign member roles | `SCR-41` Members & Roles |
-| UC05 | Activate or suspend a tenant | `SCR-50` Tenants |
+| UC05 | Create and activate a tenant workspace | `SCR-50` Tenants |
 | UC06 | Browse the IT service catalog | `SCR-10` Employee Home, `SCR-14` Service Catalog |
 | UC07 | Submit a request with the right form | `SCR-15` New Request |
 | UC08 | Find and track my tickets | `SCR-10` Employee Home, `SCR-16` My Requests, `SCR-17` Request Detail |
@@ -150,6 +150,11 @@ The one-line description of every section is on the page cards above; the source
 | UC36 | Set SLA targets by type and priority | `SCR-34` SLA Policies |
 | UC37 | Get alerts when a deadline is at risk | `SCR-03` Notification Center, `SCR-33` SLA & Reports |
 | UC38 | View and export operations reports | `SCR-33` SLA & Reports |
+| UC39 | Change my password | `SCR-02` My Profile |
+| UC40 | View my notifications | `SCR-03` Notification Center |
+| UC41 | Suspend or reopen a tenant workspace | `SCR-50` Tenants |
+| UC42 | View the organization list | `SCR-50` Tenants |
+| UC43 | View the platform admin log | `SCR-50` Tenants |
 
 ## Navigation model
 
