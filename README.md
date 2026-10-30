@@ -1,8 +1,8 @@
 # SmartDesk
 
-SmartDesk is a multi-tenant SaaS that gives small and mid-sized companies one place to request IT help, track IT assets and share internal how-to guides. An AI assistant on the employee side answers questions from the company's own published articles, shows its sources and turns a conversation into a ticket draft — but only the employee can submit it, and only people can triage, approve or hand over devices.
+SmartDesk is a multi-tenant SaaS that gives small and mid-sized companies one place to request IT help, track IT assets and share internal how-to guides. An AI assistant answers questions from the company's own published articles, shows its sources and turns a conversation into a ticket draft, only the employee can submit it, and only people can triage, approve or hand over devices.
 
-## 1. Problem Analysis — Top-down Research
+## 1. Problem Analysis
 
 The problem is decomposed top-down: why the product is needed, who uses it, which services it covers, how a request flows end to end, where the AI fits, which rules are non-negotiable, what ships in which release, how the product is positioned against the market and how success is measured.
 
@@ -28,7 +28,7 @@ Editable XMind source: [`docs/mindmap/smartdesk.xmind`](docs/mindmap/smartdesk.x
 
 Full analysis: [Top-down research](docs/01-top-down-research.md).
 
-## 2. Requirements — Use Cases and INVEST User Stories
+## 2. Requirements - Use Cases and INVEST User Stories
 
 ### 2.1 Use case diagrams
 
@@ -60,12 +60,12 @@ The backlog has 43 user stories, one per use case. Each story lists its dependen
 
 | Criterion | Meaning in SmartDesk |
 |---|---|
-| **Independent** | Each story delivers a demonstrable outcome; unavoidable business prerequisites are listed. |
-| **Negotiable** | Chat/form layout and retrieval technique may change; outcome and permissions may not. |
-| **Valuable** | Every story names the benefit for its role. |
-| **Estimable** | Inputs, outputs, state changes and defaults (reopen 7 days, SLA warning 80%) are explicit. |
-| **Small** | One capability per story; the catalog builder story documents its task split. |
-| **Testable** | Every story has observable positive and negative criteria. |
+| **Independent** | Each story can be prioritized, developed, and tested with minimal dependencies on other stories. Unavoidable dependencies are explicitly identified. |
+| **Negotiable** | Implementation details, UI design, and technical approaches can be discussed and refined with stakeholders while preserving agreed business requirements. |
+| **Valuable** | Each story delivers clear value to its user role or the business by addressing a specific need or problem. |
+| **Estimable** | Each story has a sufficiently clear scope, expected behavior, business rules, and dependencies for the development team to estimate its effort. |
+| **Small** | Each story is small enough to be completed within one iteration. Large stories, such as the service catalog builder, are split into smaller, independently valuable stories. |
+| **Testable** | Each story has clear, observable, and verifiable acceptance criteria covering successful behavior and relevant error or boundary conditions. |
 
 ```text
 US01–US05   Identity and tenant           US23–US27   Catalog, approval, fulfilment
@@ -76,9 +76,9 @@ US16–US22   Ticket management             US36–US38   SLA and reporting
 
 Details: [Use cases and specifications](docs/02-use-cases.md) · [INVEST requirements](docs/03-invest-requirements.md) · [Acceptance criteria](docs/06-acceptance-criteria.md).
 
-## 3. Information Architecture — Relume Sitemap
+## 3. Information Architecture 
 
-The IA uses the Relume convention: every page is a card listing its **functional sections**. 30 pages in 5 role-based areas; every use case has at least one entry screen.
+The IA uses this convention: every page is a card listing its **functional sections**. 30 pages in 5 role-based areas; every use case has at least one entry screen.
 
 ![Sitemap overview](docs/images/relume/sitemap-overview.png)
 
@@ -100,15 +100,15 @@ Principles, flows, screen states and 40 prototype screenshots grouped by role (`
 
 ![Sign in](docs/images/ui/common/01-sign-in.png)
 
-### Employee — AI assistant and ticket draft
+### Employee - AI assistant and ticket draft
 
 ![AI Assistant](docs/images/ui/employee/03-ai-ticket-draft.png)
 
-### IT Staff — ticket with an IT-only note
+### IT Staff - ticket with an IT-only note
 
 ![Ticket detail](docs/images/ui/it-staff/04-internal-note.png)
 
-### IT Manager — rejecting needs a reason
+### IT Manager - rejecting needs a reason
 
 ![Approval inbox](docs/images/ui/it-manager/02-reject-needs-reason.png)
 
@@ -141,7 +141,7 @@ Requirements: Python 3.10+ with Pillow, and Chrome or Edge for headless renderin
 ## Project Progress
 
 - [x] Top-down problem analysis and market evidence
-- [x] Mind map (XMind) — top-down analysis and feature map
+- [x] Mind map - top-down analysis and feature map
 - [x] Use case diagrams covering 43 use cases and 6 actors
 - [x] INVEST backlog with dependencies, acceptance criteria and release plan
 - [x] Relume-style information architecture (30 pages with functional sections)
