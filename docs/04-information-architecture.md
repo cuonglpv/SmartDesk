@@ -104,7 +104,7 @@ SmartDesk
 | `SCR-40` | **Organization Settings** | `/admin/org` | Org Admin | Company profile; Offices & departments; Regional settings | UC03 |
 | `SCR-41` | **Members & Roles** | `/admin/members` | Org Admin | Members; Invite; Roles; Lock / unlock | UC04 |
 | `SCR-42` | **Catalog Builder** | `/admin/catalog` | Org Admin | Services; Form fields; Routing; Preview & publish | UC23 |
-| `SCR-50` | **Tenants** | `/platform/tenants` | Platform Admin | Companies; New workspace; Suspend / reopen (V2); Company details; Admin log | UC42, UC05, UC41, UC43 |
+| `SCR-50` | **Tenants** | `/platform/tenants` | Platform Admin | Companies; New workspace; Suspend / reopen (Phase 2); Company details; Admin log | UC42, UC05, UC41, UC43 |
 
 The one-line description of every section is on the page cards above; the source of truth for both is [`tools/model.py`](../tools/model.py).
 

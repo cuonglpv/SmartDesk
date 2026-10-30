@@ -12,7 +12,7 @@ The analysis goes top-down: business problems → users & roles → service scop
 
 ![SmartDesk top-down mind map](mindmap/mindmap-top-down.png)
 
-The second sheet decomposes the product into business modules (level 1, with their actors) and concrete user actions (level 2); items marked (V2) are outside the MVP. It is a functional map, not a UML use case diagram: some leaves group several actions and are normalised into use cases in [02 — Use cases](02-use-cases.md).
+The second sheet decomposes the product into business modules (level 1, with their actors) and concrete user actions (level 2). Release priorities are not shown on the map; they are in [03 — INVEST requirements](03-invest-requirements.md#release-plan) (ISP change and workspace suspend / reopen are Phase 2). It is a functional map, not a UML use case diagram: some leaves group several actions and are normalised into use cases in [02 — Use cases](02-use-cases.md).
 
 ![SmartDesk feature map](mindmap/mindmap-features.png)
 

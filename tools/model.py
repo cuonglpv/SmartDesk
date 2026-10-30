@@ -80,7 +80,7 @@ TOP_DOWN = [
     ]),
 ]
 
-FEATURE_ROOT = "SmartDesk\nFeature map\n(V2) = not in MVP"
+FEATURE_ROOT = "SmartDesk\nFeature map"
 
 # Level 1: business module (second line = actors). Level 2: user actions.
 FEATURES = [
@@ -91,7 +91,7 @@ FEATURES = [
     ]),
     ("Employee Service Portal\nEmployee", [
         "Browse the IT service catalog", "Report a VPN / network issue",
-        "Request VPN access", "Request a laptop", "Request an ISP change (V2)",
+        "Request VPN access", "Request a laptop", "Request an ISP change",
         "View and search my tickets", "Comment / attach files",
         "Confirm resolution / reopen", "View my assigned devices",
     ]),
@@ -128,7 +128,7 @@ FEATURES = [
     ]),
     ("SaaS Administration\nPlatform Admin", [
         "View organization list", "Create / activate workspaces",
-        "Suspend / reopen workspaces (V2)", "View platform admin log",
+        "Suspend / reopen workspaces", "View platform admin log",
     ]),
 ]
 
@@ -481,7 +481,7 @@ SCREENS = [
      "roles": "Platform Admin", "ucs": ["UC42", "UC05", "UC41", "UC43"], "sections": [
         ("Companies", "Name, plan, status and start date"),
         ("New workspace", "Create a company workspace and activate it"),
-        ("Suspend / reopen (V2)", "A suspended company can only read its data"),
+        ("Suspend / reopen (Phase 2)", "A suspended company can only read its data"),
         ("Company details", "Contacts and limits only, never ticket content"),
         ("Admin log", "Every platform admin action, who did it and when"),
     ]},
