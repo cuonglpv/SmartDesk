@@ -1,67 +1,55 @@
 # C1 — System Context
 
-> **Status:** target architecture; no backend exists yet. External providers are not chosen.
-
-SmartDesk is a multi-tenant SaaS: each customer company is a **tenant** with its own employees, IT team, catalog, tickets, assets and knowledge base. A sixth actor, the **Platform Admin**, runs the SaaS itself and must never see tenant content.
+> **Purpose:** show who uses SmartDesk and what the system is responsible for, without implementation technology.
 
 ```mermaid
-flowchart TB
-    emp["<b>Employee</b><br/><i>[Person]</i><br/>Asks the AI, submits and tracks requests,<br/>reads KB, sees own devices"]
-    it["<b>IT Staff</b><br/><i>[Person]</i><br/>Triages, works and resolves tickets,<br/>hands over devices, writes KB drafts"]
-    mgr["<b>IT Manager</b><br/><i>[Person]</i><br/>Approves requests, publishes KB,<br/>owns SLA and reports"]
-    org["<b>Org Admin</b><br/><i>[Person]</i><br/>Members, organization settings,<br/>service catalog"]
-    plat["<b>Platform Admin</b><br/><i>[Person]</i><br/>Creates, suspends and audits tenants;<br/>no access to tenant content"]
+flowchart LR
+    employee(["👤 Employee"])
+    itstaff(["👤 IT Staff"])
+    manager(["👤 IT Manager"])
+    orgadmin(["👤 Org Admin"])
+    platform(["👤 Platform Admin"])
 
-    sd["<b>SmartDesk</b><br/><i>[Software System]</i><br/>IT service desk, service catalog with approval,<br/>asset register, knowledge base and an AI assistant<br/>that answers only from published articles"]
+    subgraph boundary[" "]
+        smartdesk["SmartDesk<br/><i>[Software System]</i><br/>IT requests, service catalog with approval,<br/>IT assets, knowledge base, SLA,<br/>and an AI assistant for employees"]
+    end
 
-    ai["<b>External AI Service</b><br/><i>[Software System, external]</i><br/>LLM for answers and drafts;<br/>embedding model for KB search"]
-    mail["<b>Email Delivery Service</b><br/><i>[Software System, external]</i><br/>Invitations and notifications"]
+    ai["External AI Service<br/><i>[Software System]</i><br/>LLM and embedding model"]
+    mail["Email Delivery Service<br/><i>[Software System]</i><br/>Invitations and notifications"]
 
-    emp -- "Uses (browser, HTTPS)" --> sd
-    it -- "Uses" --> sd
-    mgr -- "Uses" --> sd
-    org -- "Uses" --> sd
-    plat -- "Uses (platform area)" --> sd
-    sd -- "Sends question + permitted KB excerpts;<br/>gets answer / draft (HTTPS)" --> ai
-    sd -- "Sends emails (SMTP or HTTPS API)" --> mail
-    mail -. "Delivers email" .-> emp
+    employee -- "asks the AI, submits and tracks requests" --> smartdesk
+    itstaff -- "triages, resolves, hands over devices, writes guides" --> smartdesk
+    manager -- "approves, publishes guides, sets SLA, reads reports" --> smartdesk
+    orgadmin -- "manages members, organization, and catalog" --> smartdesk
+    platform -- "creates, suspends, and audits tenants" --> smartdesk
+    smartdesk -- "question + permitted KB excerpts" --> ai
+    smartdesk -- "sends email" --> mail
 
-    style sd fill:#08427b,color:#fff,stroke:#052e56
-    style emp fill:#999,color:#fff,stroke:#666
-    style it fill:#999,color:#fff,stroke:#666
-    style mgr fill:#999,color:#fff,stroke:#666
-    style org fill:#999,color:#fff,stroke:#666
-    style plat fill:#999,color:#fff,stroke:#666
-    style ai fill:#bbb,color:#000,stroke:#888
-    style mail fill:#bbb,color:#000,stroke:#888
+    style smartdesk fill:#1168bd,color:#fff
+    style ai fill:#999,color:#fff
+    style mail fill:#999,color:#fff
 ```
 
-## Actors
+## System Boundary
 
-| Actor | Main use cases | Can never |
-|---|---|---|
-| Employee | UC01–UC02, UC06–UC15, UC35, UC39–UC40 | See another employee's tickets or assets, internal notes, unpublished articles |
-| IT Staff | UC16–UC22, UC26, UC28–UC31, UC33 | Approve requests, publish KB, force a ticket to `CLOSED` |
-| IT Manager | UC18, UC20, UC24–UC25, UC27, UC32, UC34, UC36–UC38 | Write assets (read-only register) |
-| Org Admin | UC03–UC04, UC23 | Work tickets, approve |
-| Platform Admin | UC05, UC41–UC43 | Read tickets, attachments, articles or assets of any tenant |
-| External AI Service | Secondary actor on UC12–UC15 | Write data, call SmartDesk APIs, see anything the asking user cannot see |
+SmartDesk is a multi-tenant SaaS: each customer company is a tenant with its own members, catalog, tickets, assets, and knowledge base. SmartDesk is responsible for sign-in and tenant selection, the service catalog and request forms, incidents, service requests and changes, approvals and fulfilment, the IT asset register and device handover, the knowledge base, the AI assistant, SLA and reports, notifications, and tenant administration.
 
-Every tenant user is an Employee as well (role grants inherit self-service), so IT Staff, IT Managers and Org Admins can also submit their own requests.
+The External AI Service only interprets questions and composes answers or drafts from excerpts SmartDesk sends; it never writes data, approves, or sees anything the asking user cannot see. The Email Delivery Service receives no internal notes or attachments.
 
-## External systems
+Outside V1 scope: single sign-on with a company identity provider, device management (MDM) and automatic provisioning, chat integrations (Teams, Slack), and inbound email-to-ticket.
 
-| System | Data sent | Trust rule |
-|---|---|---|
-| External AI Service (LLM + embeddings) | The user's question, conversation turns, KB excerpts the user is allowed to read, the published form schema when drafting | Treated as untrusted output: citations are validated, the provider has no tools that write, no database credentials, no tenant IDs beyond what the request needs |
-| Email Delivery Service | Recipient address, notification text, invitation link | Contains no internal notes or attachments; links require sign-in |
+## Users and Primary Permissions
 
-## Out of scope for the MVP
+| Person | Primary permissions |
+|---|---|
+| Employee | Self-service: catalog, own requests and comments, confirm or reopen, AI assistant, knowledge base, own devices |
+| IT Staff | Ticket queue, triage, assign, resolve, fulfilment, asset register and handover, KB drafts |
+| IT Manager | Approval decisions and rules, KB review and publishing, SLA policies and alerts, reports, read-only asset register |
+| Org Admin | Members and roles, organization settings, service catalog builder |
+| Platform Admin | Tenant creation, suspension, and the platform audit log; no access to tenant content |
 
-- Single sign-on with a company identity provider (SmartDesk uses its own email + password, UC01/UC39).
-- Device management (MDM) or automatic provisioning — handover is recorded by IT staff, not executed by SmartDesk.
-- Chat integrations (Teams, Slack) and inbound email-to-ticket.
+Every tenant role inherits Employee self-service. The API enforces role, tenant, and ownership on every request; hiding controls in the UI is only for usability.
 
----
+**Next:** zoom into the Software System → [C2 — Container](02-container.md).
 
-**Next:** [C2 — Container](02-container.md) · **Up:** [C4 overview](README.md)
+**Sources of truth:** `docs/01-top-down-research.md`, `docs/02-use-cases.md`, `docs/api/openapi.yaml`.
