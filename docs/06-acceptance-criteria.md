@@ -173,6 +173,7 @@ Each `AC-UCxx` block belongs to use case `UCxx` and user story `USxx`. The crite
 | All required fields are known | the assistant creates the draft | the employee sees type, title and fields with Confirm and Discard *(prototype)* |
 | The employee confirms twice or retries after a network error | the backend creates the ticket | the idempotency key prevents a duplicate *(prototype: button disabled)* |
 | The assistant proposed a Change but data is incomplete | the employee has not confirmed | no ticket is created |
+| The employee discards a draft | the backend records the discard | the draft is marked `Discarded`, no ticket is created and the draft cannot be submitted later (`409`) |
 
 - The confirmed draft goes through the same validation as AC-UC07.
 
